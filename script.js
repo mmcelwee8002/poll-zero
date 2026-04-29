@@ -22,41 +22,33 @@ function calculateTeamScore(games) {
   return total;
 }
 
-
-function loadRankings() {
-  const teams = [
-    {
-      name: "Team A",
-      games: [
-        { result: "win", opponentWins: 9, opponentLosses: 3 },
-        { result: "loss", opponentWins: 10, opponentLosses: 2 },
-        { result: "win", nonFBS: true }
-      ]
-    },
-    {
-      name: "Team B",
-      games: [
-        { result: "win", opponentWins: 6, opponentLosses: 6 },
-        { result: "win", opponentWins: 7, opponentLosses: 5 }
-      ]
+// 2. NEW API function )
+async function fetchTeams() {
+  const response = await fetch("https://api.collegefootballdata.com/teams/fbs", {
+    headers: {
+      Authorization: `Bearer ${API_KEY}`
     }
-  ];
-
-  const rankings = teams.map(team => {
-    return {
-      name: team.name,
-      score: calculateTeamScore(team.games)
-    };
   });
 
-  rankings.sort((a, b) => b.score - a.score);
+  const data = await response.json();
+  console.log(data);
+
+  return data;
+}
+
+
+async function loadRankings() {
+  const teams = await fetchTeams();
 
   const list = document.getElementById("rankings");
   list.innerHTML = "";
 
-  rankings.forEach((team, index) => {
+  teams.slice(0, 10).forEach((team, index) => {
     const li = document.createElement("li");
-    li.textContent = `${index + 1}. ${team.name} - ${team.score}`;
+    li.textContent = `${index + 1}. ${team.school}`;
     list.appendChild(li);
   });
 }
+
+
+
