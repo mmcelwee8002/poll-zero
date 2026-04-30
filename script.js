@@ -114,13 +114,17 @@ if (homePoints > awayPoints) {
 async function loadRankings() {
 
 const selectedYear = document.getElementById("year-select").value;
+const selectedWeek = document.getElementById("week-select").value;
 
 document.getElementById("page-title").textContent =
-`🏈 Poll Zero Rankings — ${selectedYear}`;
+`🏈 Poll Zero Rankings — ${selectedYear} — ${selectedWeek === "all" ? "All Weeks" : `Week ${selectedWeek}`}`;
 
-  const games = await fetchGames(selectedYear);
+  let games = await fetchGames(selectedYear);
+
+if (selectedWeek !== "all") {
+  games = games.filter(game => game.week <= Number(selectedWeek));
+}
   const rankings = buildPollZeroRankings(games);
-
   const list = document.getElementById("rankings");
   list.innerHTML = "";
 
