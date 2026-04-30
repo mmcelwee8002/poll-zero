@@ -2,11 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Poll Zero</title>
+  <title>Poll Zero </title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🏈 Poll Zero</h1>
+  <h1 id="page-title">🏈 Poll Zero Rankings</h1>
+  <p id="formula-note">
+  Formula: Win = 5 + opponent wins | Loss = -5 - opponent losses | Non-FBS = 1-11
+</p>
+
+<p id="mode-note">
+  Mode: Dynamic (recalculates as team records change)
+</p>
+
+<p id="mission-note">
+  No human votes. No preseason bias. Rankings are based only on on-field results.
+</p>
+
+<select id="year-select">
+  <option value="2025">2025</option>
+  <option value="2024">2024</option>
+  <option value="2023">2023</option>
+</select>
   <button onclick="loadRankings()">Load Rankings</button>
 
   <ul id="rankings"></ul>

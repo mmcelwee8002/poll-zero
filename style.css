@@ -6,4 +6,26 @@ body {
 ul {
   list-style: none;
   padding: 0;
+
+  li {
+  margin: 6px 0;
+  font-size: 18px;
+}
+#rankings {
+  max-width: 500px;
+  margin: 20px auto;
+  text-align: left;
+  padding: 0;
+}
+
+#rankings li {
+  background: #f4f4f4;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+
+
+
 }
