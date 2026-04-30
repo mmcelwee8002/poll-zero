@@ -37,6 +37,7 @@ async function fetchGames(year) {
   );
 
   const data = await response.json();
+  console.log("First game:", data[0]);
   console.log(data);
 
   return data;
@@ -111,6 +112,39 @@ if (homePoints > awayPoints) {
   return Object.values(teams).sort((a, b) => b.score - a.score);
 }
 
+function getRankMap(rankings) {
+  const rankMap = {};
+
+  rankings.forEach((team, index) => {
+    rankMap[team.name] = index + 1;
+  });
+
+  return rankMap;
+}
+
+async function fetchTeamLogos() {
+  const response = await fetch(
+    "https://api.collegefootballdata.com/teams/fbs",
+    {
+      headers: {
+        Authorization: `Bearer ${API_KEY}`
+      }
+    }
+  );
+
+  const data = await response.json();
+
+  const logoMap = {};
+
+  data.forEach(team => {
+    if (team.logos && team.logos.length > 0) {
+      logoMap[team.school] = team.logos[0];
+    }
+  });
+
+  return logoMap;
+}
+
 async function loadRankings() {
 
 const selectedYear = document.getElementById("year-select").value;
@@ -121,17 +155,58 @@ document.getElementById("page-title").textContent =
 
   let games = await fetchGames(selectedYear);
 
+  let previousRankMap = {};
+
+if (selectedWeek !== "all" && Number(selectedWeek) > 1) {
+  const prevWeek = Number(selectedWeek) - 1;
+
+  const prevGames = games.filter(game => game.week <= prevWeek);
+  const prevRankings = buildPollZeroRankings(prevGames);
+
+  previousRankMap = getRankMap(prevRankings);
+}
+
+
 if (selectedWeek !== "all") {
   games = games.filter(game => game.week <= Number(selectedWeek));
 }
   const rankings = buildPollZeroRankings(games);
+  const logoMap = await fetchTeamLogos();
   const list = document.getElementById("rankings");
+
   list.innerHTML = "";
 
-  rankings.slice(0, 25).forEach((team, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${index + 1}. ${team.name} — ${team.score} points (${team.wins}-${team.losses})`;
-    list.appendChild(li);
+rankings.slice(0, 25).forEach((team, index) => {
+const currentRank = index + 1;
+const previousRank = previousRankMap[team.name];
+
+let movement = "";
+
+if (previousRank !== undefined) {
+  const change = previousRank - currentRank;
+
+if (change > 0) movement = `<span class="up">↑ ${change}</span>`;
+if (change < 0) movement = `<span class="down">↓ ${Math.abs(change)}</span>`;
+if (change === 0) movement = `<span class="same">—</span>`;
+
+} else if (selectedWeek !== "all") {
+  movement = `<span class="new">NEW</span>`;
+}
+
+  const li = document.createElement("li");
+
+if (currentRank <= 5) {
+  li.classList.add("top-five");
+} else if (currentRank <= 10) {
+  li.classList.add("top-ten");
+}
+
+const logo = logoMap[team.name]
+  ? `<img src="${logoMap[team.name]}" class="team-logo" />`
+  : "";
+
+li.innerHTML = `${currentRank}. ${logo} ${team.name} ${movement} — ${team.score} points (${team.wins}-${team.losses})`;
+  list.appendChild(li);
   });
 }
 

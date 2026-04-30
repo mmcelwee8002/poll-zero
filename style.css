@@ -19,13 +19,55 @@ ul {
 }
 
 #rankings li {
-  background: #f4f4f4;
+  background-color: #f4f4f4;
   margin: 8px 0;
   padding: 10px;
   border-radius: 8px;
 }
 
+.up {
+  color: green;
+  font-weight: bold;
+}
+
+.down {
+  color: red;
+  font-weight: bold;
+}
+
+.same {
+  color: gray;
+}
+
+.new {
+  color: blue;
+  font-weight: bold;
+}
 
 
+#rankings li:nth-child(-n+5) {
+  background-color: #d4edda !important;
+  font-weight: bold !important;
+}
 
+#rankings li:nth-child(-n+10) {
+  border-left: 5px solid green !important;
+}
+
+.top-five {
+  background-color: #d4edda;
+  font-weight: bold;
+}
+
+.top-ten {
+  border-left: 5px solid green;
+  padding-left: 6px;
+}
+.team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 6px;
+}
 }
