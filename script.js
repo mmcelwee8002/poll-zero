@@ -47,7 +47,7 @@ function isNonFBS(classification) {
   return classification && classification.toLowerCase() !== "fbs";
 }
 
-function buildPollZeroRankings(games) {
+function buildPollZeroRankings(games, selectedWeek) {
   const teams = {};
 
   games.forEach(game => {
