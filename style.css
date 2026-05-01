@@ -59,15 +59,15 @@ font-weight: bold;
   border-left: 5px solid green !important;
 }
 
-.top-five {
-  background-color: #d4edda;
-  font-weight: bold;
+.top-four {
+  border-left: 6px solid #2ecc71; /* elite green */
 }
 
-.top-ten {
-  border-left: 5px solid green;
-  padding-left: 6px;
+.top-twelve {
+  border-left: 6px solid #27ae60; /* slightly lighter green */
 }
+
+
 .team-logo {
   width: 24px;
   height: 24px;

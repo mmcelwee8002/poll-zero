@@ -245,10 +245,10 @@ if (change === 0) movement = `<span class="same">—</span>`;
 const li = document.createElement("li");
 
 // Ranking Style
-if (currentRank <= 5) {
-  li.classList.add("top-five");
-} else if (currentRank <= 10) {
-  li.classList.add("top-ten");
+if (currentRank <= 4) {
+  li.classList.add("top-four");   // optional if you want to keep this
+} else if (currentRank <= 12) {
+  li.classList.add("top-twelve");
 }
 
 // Logo 
