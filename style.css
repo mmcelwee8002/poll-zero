@@ -6,11 +6,13 @@ body {
 ul {
   list-style: none;
   padding: 0;
+}
 
   li {
-  margin: 6px 0;
-  font-size: 18px;
-}
+    margin: 6px 0;
+    font-size: 18px;
+  }
+
 #rankings {
   max-width: 500px;
   margin: 20px auto;
@@ -25,25 +27,21 @@ ul {
   border-radius: 8px;
 }
 
-.up {
-  color: green;
-  font-weight: bold;
+.up { color: green;
+font-weight: bold;
 }
 
-.down {
-  color: red;
-  font-weight: bold;
+.down { color: red;
+font-weight: bold
 }
 
-.same {
-  color: gray;
+.same { color: grey;
+
 }
 
-.new {
-  color: blue;
-  font-weight: bold;
+.new {color: blue;
+font-weight: bold;
 }
-
 
 #rankings li:nth-child(-n+5) {
   background-color: #d4edda !important;
@@ -69,5 +67,4 @@ ul {
   object-fit: contain;
   vertical-align: middle;
   margin-right: 6px;
-}
 }
