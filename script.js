@@ -109,7 +109,25 @@ if (homePoints > awayPoints) {
 }
   });
 
-  return Object.values(teams).sort((a, b) => b.score - a.score);
+ const teamList = Object.values(teams).filter(team => {
+  const teamGames = games.filter(game =>
+    game.homeTeam === team.name || game.awayTeam === team.name
+  );
+
+  return teamGames.some(game =>
+    (game.homeTeam === team.name && game.homeClassification === "fbs") ||
+    (game.awayTeam === team.name && game.awayClassification === "fbs")
+  );
+});
+
+// calculate average score per game
+teamList.forEach(team => {
+  const gamesPlayed = team.wins + team.losses;
+  team.avgScore = gamesPlayed > 0 ? team.score / gamesPlayed : 0;
+});
+
+// sort by average instead of total
+return teamList.sort((a, b) => b.avgScore - a.avgScore);
 }
 
 function getRankMap(rankings) {
