@@ -13,6 +13,13 @@ ul {
     font-size: 18px;
   }
 
+  li {
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  list-style: none;
+}
+
 #rankings {
   max-width: 500px;
   margin: 20px auto;
@@ -67,4 +74,30 @@ font-weight: bold;
   object-fit: contain;
   vertical-align: middle;
   margin-right: 6px;
+}
+
+.elite {
+  background-color: #2ecc71;
+  color: #0b2e13; /* dark green/near black */
+  font-weight: bold;
+}
+
+.great {
+  background-color: #27ae60;
+  color: #0b2e13;
+}
+
+.good {
+  background-color: #f1c40f;
+  color: #222;
+}
+
+.average {
+  background-color: #e67e22;
+  color: #222;
+}
+
+.bad {
+  background-color: #e74c3c;
+  color: white;
 }

@@ -1,5 +1,12 @@
 
 const SEASON_YEAR = 2025;
+function getMinimumGames(week) {
+  if (week <= 1) return 1;
+  if (week <= 3) return 2;
+  if (week <= 6) return 3;
+  if (week <= 9) return 5;
+  return 6;
+}
 
 function calculateTeamScore(games) {
   let total = 0;
@@ -51,6 +58,9 @@ function buildPollZeroRankings(games, selectedWeek) {
   const teams = {};
 
   games.forEach(game => {
+      if (game.week > selectedWeek) {
+    return;
+  }
     const homeTeam = game.homeTeam;
     const awayTeam = game.awayTeam;
     const homePoints = game.homePoints;
@@ -120,16 +130,37 @@ if (homePoints > awayPoints) {
   );
 });
 
+
+
 // calculate average score per game
 teamList.forEach(team => {
   const gamesPlayed = team.wins + team.losses;
+  team.gamesPlayed = gamesPlayed;
   team.avgScore = gamesPlayed > 0 ? team.score / gamesPlayed : 0;
 });
 
 // sort by average instead of total
-return teamList.sort((a, b) => b.avgScore - a.avgScore);
-}
+const minimumGames = getMinimumGames(selectedWeek);
 
+const eligibleTeams = teamList.filter(
+  (team) => team.gamesPlayed >= minimumGames
+);
+
+const scores = eligibleTeams.map(team => team.avgScore);
+const minScore = Math.min(...scores);
+const maxScore = Math.max(...scores);
+
+eligibleTeams.forEach(team => {
+  if (maxScore === minScore) {
+    team.rating = 50;
+  } else {
+    team.rating =
+      ((team.avgScore - minScore) / (maxScore - minScore)) * 100;
+  }
+});
+
+return eligibleTeams.sort((a, b) => b.rating - a.rating);
+}
 function getRankMap(rankings) {
   const rankMap = {};
 
@@ -179,7 +210,7 @@ if (selectedWeek !== "all" && Number(selectedWeek) > 1) {
   const prevWeek = Number(selectedWeek) - 1;
 
   const prevGames = games.filter(game => game.week <= prevWeek);
-  const prevRankings = buildPollZeroRankings(prevGames);
+  const prevRankings = buildPollZeroRankings(prevGames, prevWeek);
 
   previousRankMap = getRankMap(prevRankings);
 }
@@ -188,7 +219,7 @@ if (selectedWeek !== "all" && Number(selectedWeek) > 1) {
 if (selectedWeek !== "all") {
   games = games.filter(game => game.week <= Number(selectedWeek));
 }
-  const rankings = buildPollZeroRankings(games);
+  const rankings = buildPollZeroRankings(games, selectedWeek);
   const logoMap = await fetchTeamLogos();
   const list = document.getElementById("rankings");
 
@@ -211,22 +242,38 @@ if (change === 0) movement = `<span class="same">—</span>`;
   movement = `<span class="new">NEW</span>`;
 }
 
-  const li = document.createElement("li");
+const li = document.createElement("li");
 
+// Ranking Style
 if (currentRank <= 5) {
   li.classList.add("top-five");
 } else if (currentRank <= 10) {
   li.classList.add("top-ten");
 }
 
+// Logo 
 const logo = logoMap[team.name]
   ? `<img src="${logoMap[team.name]}" class="team-logo" />`
   : "";
 
-li.innerHTML = `${currentRank}. ${logo} ${team.name} ${movement} — ${team.score} points (${team.wins}-${team.losses})`;
+// Tier Logic
+
+  let tierClass = "";
+
+if (team.rating >= 90) tierClass = "elite";
+else if (team.rating >= 80) tierClass = "great";
+else if (team.rating >= 70) tierClass = "good";
+else if (team.rating >= 60) tierClass = "average";
+else tierClass = "bad";
+
+  
+   li.classList.add(tierClass);
+
+li.innerHTML = `${currentRank}. ${logo} ${team.name} ${movement} - Rating: ${team.rating.toFixed(1)} (${team.wins}-${team.losses})`;
   list.appendChild(li);
   });
 }
 
 
 
+window.loadRankings = loadRankings;
