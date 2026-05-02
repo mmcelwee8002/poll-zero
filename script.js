@@ -167,17 +167,22 @@ function getRankMap(rankings) {
   return rankMap;
 }
 
+// async function fetchTeamLogos() {
 async function fetchTeamLogos() {
-  const response = await fetch(
-    "https://api.collegefootballdata.com/teams/fbs",
-    {
-      headers: {
-        Authorization: `Bearer ${API_KEY}`
-      }
-    }
-  );
+  const response = await fetch("/api/teams");
 
   const data = await response.json();
+
+  // const response = await fetch(
+  //   "https://api.collegefootballdata.com/teams/fbs",
+  //   {
+  //     headers: {
+  //       Authorization: `Bearer ${API_KEY}`
+  //     }
+  //   }
+  // );
+
+  // const data = await response.json();
 
   const logoMap = {};
 
