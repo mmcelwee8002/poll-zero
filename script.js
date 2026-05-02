@@ -32,17 +32,12 @@ function calculateTeamScore(games) {
   return total;
 }
 
-// 2. NEW API function )
-async function fetchGames(year, week) {
-  
-const response = await fetch(`https://poll-zero.vercel.app/api/games?year=${year}&week=${week}`);
 
-  
-  
+
+async function fetchGames(year) {
+  const response = await fetch(`/api/games?year=${year}`);
+
   const data = await response.json();
-  console.log("First game:", data[0]);
-  console.log(data);
-
   return data;
 }
 
@@ -58,9 +53,7 @@ if (selectedWeek !== "all" && game.week > Number(selectedWeek)) {
   return;
 }
 
-    //   if (game.week > selectedWeek) {
-    // return;
-  // }
+
     const homeTeam = game.homeTeam;
     const awayTeam = game.awayTeam;
     const homePoints = game.homePoints;
@@ -177,17 +170,7 @@ async function fetchTeamLogos() {
 
   const data = await response.json();
 
-  // const response = await fetch(
-  //   "https://api.collegefootballdata.com/teams/fbs",
-  //   {
-  //     headers: {
-  //       Authorization: `Bearer ${API_KEY}`
-  //     }
-  //   }
-  // );
-
-  // const data = await response.json();
-
+ 
   const logoMap = {};
 
   data.forEach(team => {
@@ -209,7 +192,7 @@ document.getElementById("page-title").textContent =
 
  const weekParam = selectedWeek === "all" ? "" : selectedWeek;
 
-let games = await fetchGames(selectedYear, weekParam);
+let games = await fetchGames(selectedYear,);
 
   let previousRankMap = {};
 
