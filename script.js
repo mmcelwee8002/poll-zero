@@ -35,7 +35,7 @@ function calculateTeamScore(games) {
 // 2. NEW API function )
 async function fetchGames(year, week) {
   
-const response = await fetch(`/api/games?year=${year}&week=${week}`);
+const response = await fetch(`https://poll-zero.vercel.app/api/games?year=${year}&week=${week}`);
 
   
   
@@ -198,10 +198,9 @@ const selectedWeek = document.getElementById("week-select").value;
 document.getElementById("page-title").textContent =
 `🏈 Poll Zero Rankings — ${selectedYear} — ${selectedWeek === "all" ? "All Weeks" : `Week ${selectedWeek}`}`;
 
- let games = await fetchGames(
-  selectedYear,
-  selectedWeek === "all" ? "" : selectedWeek
-);
+ const weekParam = selectedWeek === "all" ? "" : selectedWeek;
+
+let games = await fetchGames(selectedYear, weekParam);
 
   let previousRankMap = {};
 
