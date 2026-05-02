@@ -33,16 +33,12 @@ function calculateTeamScore(games) {
 }
 
 // 2. NEW API function )
-async function fetchGames(year) {
-  const response = await fetch(
-      `https://api.collegefootballdata.com/games?year=${year}&seasonType=regular&classification=fbs`,
-    {
-      headers: {
-        Authorization: `Bearer ${API_KEY}`
-      }
-    }
-  );
+async function fetchGames(year, week) {
+  
+const response = await fetch(`/api/games?year=${year}&week=${week}`);
 
+  
+  
   const data = await response.json();
   console.log("First game:", data[0]);
   console.log(data);
@@ -202,7 +198,10 @@ const selectedWeek = document.getElementById("week-select").value;
 document.getElementById("page-title").textContent =
 `🏈 Poll Zero Rankings — ${selectedYear} — ${selectedWeek === "all" ? "All Weeks" : `Week ${selectedWeek}`}`;
 
-  let games = await fetchGames(selectedYear);
+ let games = await fetchGames(
+  selectedYear,
+  selectedWeek === "all" ? "" : selectedWeek
+);
 
   let previousRankMap = {};
 
