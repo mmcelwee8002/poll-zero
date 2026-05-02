@@ -129,3 +129,44 @@ footer {
   background-color: #fafafa;
 }
 
+/*mobile style */
+
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  select,
+  button {
+    font-size: 14px;
+    padding: 6px;
+    margin-top: 6px;
+  }
+
+  ul {
+    padding-left: 0;
+  }
+
+  li {
+    font-size: 14px;
+    padding: 10px;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
+  .team-logo {
+    width: 22px;
+    height: 22px;
+  }
+
+  .feedback-note,
+  footer {
+    font-size: 12px;
+  }
+}
