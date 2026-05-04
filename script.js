@@ -267,14 +267,22 @@ const barColor =
   "#e74c3c";
 
 const barWidth = team.rating;
+
 li.innerHTML = `
-  ${currentRank}. ${logo} ${team.name} ${movement}
+  <div class="team-row">
+    <span>${currentRank}. ${logo} ${team.name} ${movement}</span>
+    <span class="rating-value">${team.rating.toFixed(1)}</span>
+  </div>
+
   <div class="rating-bar">
-<div class="rating-fill" style="width: ${barWidth}%; background: ${barColor};"></div>
-  <span class="rating-text">
-    Rating: ${team.rating.toFixed(1)} (${team.wins}-${team.losses})
-  </span>
+    <div class="rating-fill" style="width: ${barWidth}%; background: ${barColor};"></div>
+  </div>
+
+  <div class="record-text">
+    (${team.wins}-${team.losses})
+  </div>
 `;
+
   list.appendChild(li);});
 }
 
