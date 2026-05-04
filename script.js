@@ -259,9 +259,23 @@ else tierClass = "bad";
   
    li.classList.add(tierClass);
 
-li.innerHTML = `${currentRank}. ${logo} ${team.name} ${movement} - Rating: ${team.rating.toFixed(1)} (${team.wins}-${team.losses})`;
-  list.appendChild(li);
-  });
+const barColor =
+  team.rating >= 90 ? "#2ecc71" :
+  team.rating >= 80 ? "#27ae60" :
+  team.rating >= 70 ? "#f1c40f" :
+  team.rating >= 60 ? "#e67e22" :
+  "#e74c3c";
+
+const barWidth = team.rating;
+li.innerHTML = `
+  ${currentRank}. ${logo} ${team.name} ${movement}
+  <div class="rating-bar">
+<div class="rating-fill" style="width: ${barWidth}%; background: ${barColor};"></div>
+  <span class="rating-text">
+    Rating: ${team.rating.toFixed(1)} (${team.wins}-${team.losses})
+  </span>
+`;
+  list.appendChild(li);});
 }
 
 
