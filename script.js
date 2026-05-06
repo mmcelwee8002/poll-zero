@@ -242,22 +242,22 @@ const logo = logoMap[team.name]
 
   let tierClass = "";
 
-if (team.rating >= 14) tierClass = "elite";
-else if (team.rating >= 12) tierClass = "great";
-else if (team.rating >= 10) tierClass = "good";
-else if (team.rating >= 8) tierClass = "average";
+if (team.rating >= 9) tierClass = "elite";
+else if (team.rating >= 8) tierClass = "great";
+else if (team.rating >= 7) tierClass = "good";
+else if (team.rating >= 6) tierClass = "average";
 else tierClass = "bad";
   
    li.classList.add(tierClass);
 
 const barColor =
-  team.rating >= 14 ? "#2ecc71" :
-  team.rating >= 12 ? "#27ae60" :
-  team.rating >= 10 ? "#f1c40f" :
-  team.rating >= 8 ? "#e67e22" :
+  team.rating >= 9 ? "#2ecc71" :
+  team.rating >= 8 ? "#27ae60" :
+  team.rating >= 7 ? "#f1c40f" :
+  team.rating >= 6 ? "#e67e22" :
   "#e74c3c";
 
-const barWidth = team.rating;
+const barWidth = Math.min(team.rating * 10, 100);
 
 li.innerHTML = `
   <div class="team-row">
