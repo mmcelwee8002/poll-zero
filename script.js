@@ -139,20 +139,12 @@ const eligibleTeams = teamList.filter(
   (team) => team.gamesPlayed >= minimumGames
 );
 
-const scores = eligibleTeams.map(team => team.avgScore);
-const minScore = Math.min(...scores);
-const maxScore = Math.max(...scores);
-
 eligibleTeams.forEach(team => {
-  if (maxScore === minScore) {
-    team.rating = 50;
-  } else {
-    team.rating =
-      ((team.avgScore - minScore) / (maxScore - minScore)) * 100;
-  }
+  team.rating = team.avgScore;
 });
 
-return eligibleTeams.sort((a, b) => b.rating - a.rating);
+return eligibleTeams.sort((a, b) => b.avgScore - a.avgScore);
+
 }
 function getRankMap(rankings) {
   const rankMap = {};
@@ -250,20 +242,19 @@ const logo = logoMap[team.name]
 
   let tierClass = "";
 
-if (team.rating >= 90) tierClass = "elite";
-else if (team.rating >= 80) tierClass = "great";
-else if (team.rating >= 70) tierClass = "good";
-else if (team.rating >= 60) tierClass = "average";
+if (team.rating >= 14) tierClass = "elite";
+else if (team.rating >= 12) tierClass = "great";
+else if (team.rating >= 10) tierClass = "good";
+else if (team.rating >= 8) tierClass = "average";
 else tierClass = "bad";
-
   
    li.classList.add(tierClass);
 
 const barColor =
-  team.rating >= 90 ? "#2ecc71" :
-  team.rating >= 80 ? "#27ae60" :
-  team.rating >= 70 ? "#f1c40f" :
-  team.rating >= 60 ? "#e67e22" :
+  team.rating >= 14 ? "#2ecc71" :
+  team.rating >= 12 ? "#27ae60" :
+  team.rating >= 10 ? "#f1c40f" :
+  team.rating >= 8 ? "#e67e22" :
   "#e74c3c";
 
 const barWidth = team.rating;
