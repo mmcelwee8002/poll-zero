@@ -259,6 +259,7 @@ const barColor =
 
 const barWidth = Math.min(team.rating * 10, 100);
 
+
 li.innerHTML = `
   <div class="team-row">
     <span>${currentRank}. ${logo} ${team.name} ${movement}</span>
@@ -272,12 +273,15 @@ li.innerHTML = `
   <div class="record-text">
     (${team.wins}-${team.losses})
   </div>
+
+  <div class="score-breakdown">
+    Raw points: ${team.score.toFixed(1)} |
+    Games: ${team.gamesPlayed} |
+    ${team.score.toFixed(1)} ÷ ${team.gamesPlayed} = ${team.rating.toFixed(1)}
+  </div>
 `;
-<div class="score-breakdown">
-  Raw points: ${team.score.toFixed(1)} |
-  Games: ${team.gamesPlayed} |
-  ${team.score.toFixed(1)} ÷ ${team.gamesPlayed} = ${team.rating.toFixed(1)}
-</div>;
+
+
 
   list.appendChild(li);});
 }
