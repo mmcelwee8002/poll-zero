@@ -174,7 +174,12 @@ footer {
   text-align: left;
 }
 
-
+.score-breakdown {
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+  text-align: left;
+}
 
 
 
