@@ -277,7 +277,7 @@ li.innerHTML = `
   Raw points: ${team.score.toFixed(1)} |
   Games: ${team.gamesPlayed} |
   ${team.score.toFixed(1)} ÷ ${team.gamesPlayed} = ${team.rating.toFixed(1)}
-</div>
+</div>;
 
   list.appendChild(li);});
 }
