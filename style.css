@@ -182,46 +182,48 @@ footer {
 }
 
 
-
-/*mobile style */
-
 @media (max-width: 600px) {
   body {
-    font-size: 14px;
-    padding: 10px;
+    font-size: 16px;
+    padding: 12px;
   }
 
   h1 {
-    font-size: 22px;
+    font-size: 28px;
     line-height: 1.2;
+  }
+
+  li {
+    font-size: 16px;
+    padding: 12px;
+    min-height: 90px;
+  }
+
+  .team-row {
+    font-size: 18px;
+  }
+
+  .rating-value {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .record-text {
+    font-size: 14px;
+  }
+
+  .score-breakdown {
+    font-size: 13px;
+  }
+
+  .team-logo {
+    width: 28px;
+    height: 28px;
   }
 
   select,
   button {
-    font-size: 14px;
-    padding: 6px;
-    margin-top: 6px;
-  }
-
-  ul {
-    padding-left: 0;
-  }
-
-  li {
-    font-size: 10px 14px 14px;
-    padding: 10px;
-    margin-bottom: 8px;
-    text-align: left;
-    min-height: 76px;
-  }
-
-  .team-logo {
-    width: 22px;
-    height: 22px;
-  }
-
-  .feedback-note,
-  footer {
-    font-size: 12px;
+    font-size: 16px;
+    padding: 8px;
   }
 }
