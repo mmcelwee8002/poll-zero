@@ -273,12 +273,6 @@ li.innerHTML = `
   <div class="record-text">
     (${team.wins}-${team.losses})
   </div>
-
-<div class="score-breakdown">
-  Formula: +5 per future win by teams you beat |
-  -5 per future loss by teams you lost to |
-  FCS = 0
-</div>
 `;
 
 
