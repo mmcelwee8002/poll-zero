@@ -274,13 +274,11 @@ li.innerHTML = `
     (${team.wins}-${team.losses})
   </div>
 
-<!--
 <div class="score-breakdown">
-  Raw points: ${team.score.toFixed(1)} |
-  Games: ${team.gamesPlayed} |
-  ${team.score.toFixed(1)} ÷ ${team.gamesPlayed} = ${team.rating.toFixed(1)}
+  Formula: +5 per future win by teams you beat |
+  -5 per future loss by teams you lost to |
+  FCS = 0
 </div>
--->
 `;
 
 
