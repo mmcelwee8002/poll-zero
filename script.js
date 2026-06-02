@@ -186,6 +186,44 @@ async function fetchTeamLogos() {
   return logoMap;
 }
 
+// Use AP rankings before CFP rankings exist.
+// Starting Week 11, compare Poll Zero against CFP.
+function getPollNameForWeek(selectedWeek) {
+  return Number(selectedWeek) >= 11
+    ? "Playoff Committee Rankings"
+    : "AP Top 25";
+}
+
+// Builds a quick lookup table:
+// Example: officialRankMap["Indiana"] = 3
+function buildOfficialRankMap(officialRankings, selectedWeek) {
+  const officialRankMap = {};
+
+  // No official ranking comparison for "All Weeks"
+  if (!officialRankings || officialRankings.length === 0) {
+    return officialRankMap;
+  }
+
+  const pollName = getPollNameForWeek(selectedWeek);
+
+  // CollegeFootballData returns rankings inside officialRankings[0].polls
+  const polls = officialRankings[0].polls;
+
+  const selectedPoll = polls.find(poll => poll.poll === pollName);
+
+  // If the selected poll does not exist for that week, return empty map
+  if (!selectedPoll) {
+    return officialRankMap;
+  }
+
+  selectedPoll.ranks.forEach(item => {
+    officialRankMap[item.school] = item.rank;
+  });
+
+  return officialRankMap;
+}
+
+
 async function loadRankings() {
 
 const selectedYear = document.getElementById("year-select").value;
@@ -206,6 +244,16 @@ if (selectedWeek !== "all") {
   officialRankings = await fetchOfficialRankings(selectedYear, selectedWeek);
 }
 
+// Build lookup table:
+// Indiana -> 8
+// Ohio State -> 2
+// etc.
+const officialRankMap = buildOfficialRankMap(
+  officialRankings,
+  selectedWeek
+);
+
+console.log("Official rank map:", officialRankMap);
 
   let previousRankMap = {};
 
