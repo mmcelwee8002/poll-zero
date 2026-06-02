@@ -339,9 +339,9 @@ li.innerHTML = `
     <div class="rating-fill" style="width: ${barWidth}%; background: ${barColor};"></div>
   </div>
 
-  <div class="record-text">
-    (${team.wins}-${team.losses})
-  </div>
+<div class="record-text">
+  (${team.wins}-${team.losses}) ${officialRankMap[team.name] ? `| ${getPollNameForWeek(selectedWeek) === "AP Top 25" ? "AP" : "CFP"} #${officialRankMap[team.name]}` : "| NR"}
+</div>
 `;
 
 
