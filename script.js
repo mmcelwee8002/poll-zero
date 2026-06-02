@@ -196,7 +196,7 @@ document.getElementById("page-title").textContent =
 
  const weekParam = selectedWeek === "all" ? "" : selectedWeek;
 
-let games = await fetchGames(selectedYear,);
+let games = await fetchGames(selectedYear);
 
 // Get AP / CFP rankings for the selected week.
 // This lets us compare Poll Zero against human / committee rankings.
