@@ -41,6 +41,18 @@ async function fetchGames(year) {
   return data;
 }
 
+// Gets AP / CFP rankings from our Vercel backend.
+// Weeks 1-10 will use AP. Weeks 11+ will use CFP later.
+async function fetchOfficialRankings(year, week) {
+  const response = await fetch(`/api/rankings?year=${year}&week=${week}`);
+  const data = await response.json();
+
+  console.log("Official rankings:", data);
+
+  return data;
+}
+
+
 function isNonFBS(classification) {
   return classification && classification.toLowerCase() !== "fbs";
 }
@@ -185,6 +197,15 @@ document.getElementById("page-title").textContent =
  const weekParam = selectedWeek === "all" ? "" : selectedWeek;
 
 let games = await fetchGames(selectedYear,);
+
+// Get AP / CFP rankings for the selected week.
+// This lets us compare Poll Zero against human / committee rankings.
+let officialRankings = [];
+
+if (selectedWeek !== "all") {
+  officialRankings = await fetchOfficialRankings(selectedYear, selectedWeek);
+}
+
 
   let previousRankMap = {};
 
