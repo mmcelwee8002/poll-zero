@@ -11,16 +11,6 @@
   <main>
   <h1 id="page-title">🏈 Poll Zero Rankings</h1>
   
-<p id="formula-note">
-Formula: Win = 5 + opponent wins | Loss = -5 - opponent losses | Non-FBS = 1-11<br>
-<span class="fcs-note">
-Beating an FCS team is worth +5, while losing to one is -55.
-</span>
-</p>
-
-
-
-
 <p id="mission-note">
   No human votes. No preseason bias. Rankings are based only on on-field results.
 </p>
@@ -58,11 +48,15 @@ Beating an FCS team is worth +5, while losing to one is -55.
   <button onclick="loadRankings()">Load Rankings</button>
 
 <p class="formula-note">
-  Opponent Outcome Model:
-+5 for each win earned by teams you beat |
--5 for each loss suffered by teams you lost to |
-FCS opponents = 1-11 |
-Rating = Total Points ÷ Games Played
+Opponent Outcome Model:
+<br>
++5 for each win earned by teams you beat | -5 for each loss suffered by teams you lost to
+<br>
+Teams gain points when opponents they beat continue winning and lose points when opponents they lose to continue losing.
+<br>
+FCS opponents are treated as 1-11.
+<br>
+Rating = Total Points ÷ Games Played.
 </p>
 
   <ul id="rankings"></ul>
