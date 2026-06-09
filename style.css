@@ -78,6 +78,11 @@ font-weight: bold;
   border-left: 6px solid #27ae60; /* slightly lighter green */
 }
 
+.fcs-note {
+  font-size: 11px;
+  color: #777;
+  font-style: italic;
+}
 
 .team-logo {
   width: 24px;

@@ -115,6 +115,7 @@ const homeLosses = homeIsNonFBS ? 11 : home.losses;
 const awayWins = awayIsNonFBS ? 1 : away.wins;
 const awayLosses = awayIsNonFBS ? 11 : away.losses;
 
+
 if (homePoints > awayPoints) {
   home.score += awayWins * 5;
   away.score += homeLosses * -5;
