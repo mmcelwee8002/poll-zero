@@ -1,5 +1,7 @@
 body {
   font-family: Arial;
+  background: #181818;
+  color: white;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -22,6 +24,7 @@ ul {
   li {
     margin: 6px 0;
     font-size: 18px;
+    background: #262626;
   }
 
   li {
