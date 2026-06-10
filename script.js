@@ -75,13 +75,15 @@ if (selectedWeek !== "all" && game.week > Number(selectedWeek)) {
     if (homePoints === null || awayPoints === null) {
       return;
     }
+    
+// Track score contributors so users can see why a team has its rating.
 
     if (!teams[homeTeam]) {
-      teams[homeTeam] = { name: homeTeam, wins: 0, losses: 0, score: 0 };
+      teams[homeTeam] = { name: homeTeam, wins: 0, losses: 0, score: 0, breakdown: [] };
     }
 
     if (!teams[awayTeam]) {
-      teams[awayTeam] = { name: awayTeam, wins: 0, losses: 0, score: 0 };
+      teams[awayTeam] = { name: awayTeam, wins: 0, losses: 0, score: 0, breakdown: [] };
     }
 
     if (homePoints > awayPoints) {
