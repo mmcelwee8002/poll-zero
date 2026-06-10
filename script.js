@@ -119,11 +119,51 @@ const awayLosses = awayIsNonFBS ? 11 : away.losses;
 
 
 if (homePoints > awayPoints) {
-  home.score += awayWins * 5;
-  away.score += homeLosses * -5;
+  // Home team won.
+  // Winner earns +5 for each win the opponent has.
+  const homeContribution = awayWins * 5;
+
+  // Loser loses -5 for each loss the winning team has.
+  const awayContribution = homeLosses * -5;
+
+  home.score += homeContribution;
+  away.score += awayContribution;
+
+  // Save breakdown details for hover/click explanation.
+  home.breakdown.push({
+    opponent: away.name,
+    result: "Win",
+    points: homeContribution
+  });
+
+  away.breakdown.push({
+    opponent: home.name,
+    result: "Loss",
+    points: awayContribution
+  });
 } else {
-  away.score += homeWins * 5;
-  home.score += awayLosses * -5;
+  // Away team won.
+  // Winner earns +5 for each win the opponent has.
+  const awayContribution = homeWins * 5;
+
+  // Loser loses -5 for each loss the winning team has.
+  const homeContribution = awayLosses * -5;
+
+  away.score += awayContribution;
+  home.score += homeContribution;
+
+  // Save breakdown details for hover/click explanation.
+  away.breakdown.push({
+    opponent: home.name,
+    result: "Win",
+    points: awayContribution
+  });
+
+  home.breakdown.push({
+    opponent: away.name,
+    result: "Loss",
+    points: homeContribution
+  });
 }
   });
 
