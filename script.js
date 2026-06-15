@@ -375,12 +375,27 @@ const barWidth = Math.min(team.rating * 10, 100);
 
 // Get top score contributors for hover explanation.
 // Sort by absolute point impact so biggest positive/negative contributors show first.
-const topContributors = team.breakdown
-  .slice()
-  .sort((a, b) => Math.abs(b.points) - Math.abs(a.points))
-  .slice(0, 3)
-  .map(item => `${item.opponent}: ${item.points > 0 ? "+" : ""}${item.points}`)
-  .join(" | ");
+const topPositive = team.breakdown
+  .filter(item => item.points > 0)
+  .sort((a, b) => b.points - a.points)
+  .slice(0, 3);
+
+const topNegative = team.breakdown
+  .filter(item => item.points < 0)
+  .sort((a, b) => a.points - b.points)
+  .slice(0, 2);
+
+const topContributors = [
+  "Top Positive",
+  ...topPositive.map(item =>
+    `${item.opponent}: +${item.points}`
+  ),
+  "",
+  "Top Negative",
+  ...topNegative.map(item =>
+    `${item.opponent}: ${item.points}`
+  )
+].join(" | ");
 
 
 
