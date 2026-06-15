@@ -385,13 +385,12 @@ const topContributors = team.breakdown
   
 
 li.innerHTML = `
-  <div class="team-row">
-<span class="rating-value score-hover">
-  ${team.rating.toFixed(1)}
-
-<span class="rating-value score-hover">
-  ${team.rating.toFixed(1)}
-</span>
+<div class="team-row">
+  <span>${currentRank}. ${logo} ${team.name} ${movement}</span>
+  <span class="rating-value">
+    ${team.rating.toFixed(1)}
+  </span>
+</div>
   </div>
 
   <div class="rating-bar">

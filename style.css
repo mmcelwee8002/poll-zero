@@ -223,7 +223,7 @@ footer {
 
 /* Poll Zero score breakdown tooltip */
 
-.score-hover {
+/* .score-hover {
   position: relative;
   cursor: help;
 }
@@ -255,7 +255,7 @@ footer {
 
 .score-hover:hover .score-tooltip {
   display: block;
-}
+} */
 
 
 
