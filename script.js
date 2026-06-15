@@ -371,11 +371,26 @@ const barColor =
 
 const barWidth = Math.min(team.rating * 10, 100);
 
+// Get top score contributors for hover explanation.
+// Sort by absolute point impact so biggest positive/negative contributors show first.
+const topContributors = team.breakdown
+  .slice()
+  .sort((a, b) => Math.abs(b.points) - Math.abs(a.points))
+  .slice(0, 3)
+  .map(item => `${item.opponent}: ${item.points > 0 ? "+" : ""}${item.points}`)
+  .join(" | ");
+
+  
 
 li.innerHTML = `
   <div class="team-row">
     <span>${currentRank}. ${logo} ${team.name} ${movement}</span>
-    <span class="rating-value">${team.rating.toFixed(1)}</span>
+    <span 
+  class="rating-value score-hover"
+  title="Poll Zero Breakdown&#10;&#10;${topContributors}&#10;&#10;Total Points: ${team.score}&#10;Games Played: ${team.gamesPlayed}&#10;&#10;${team.score} ÷ ${team.gamesPlayed} = ${team.rating.toFixed(1)}"
+>
+  ${team.rating.toFixed(1)}
+</span>
   </div>
 
   <div class="rating-bar">
