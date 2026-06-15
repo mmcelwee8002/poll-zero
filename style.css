@@ -221,6 +221,47 @@ footer {
   font-style: italic;
 }
 
+/* Poll Zero score breakdown tooltip */
+
+.score-hover {
+  position: relative;
+  cursor: help;
+}
+
+.score-tooltip {
+  display: none;
+
+  position: absolute;
+  top: 125%;
+  right: 0;
+
+  min-width: 260px;
+
+  background: #1e1e1e;
+  color: white;
+
+  padding: 12px;
+  border-radius: 8px;
+
+  border: 1px solid #444;
+
+  text-align: left;
+  line-height: 1.4;
+
+  z-index: 1000;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+}
+
+.score-hover:hover .score-tooltip {
+  display: block;
+}
+
+
+
+
+
+
 @media (max-width: 600px) {
   body {
     font-size: 16px;
