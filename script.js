@@ -141,6 +141,8 @@ if (homePoints > awayPoints) {
     result: "Loss",
     points: awayContribution
   });
+
+  
 } else {
   // Away team won.
   // Winner earns +5 for each win the opponent has.
@@ -375,7 +377,7 @@ const barWidth = Math.min(team.rating * 10, 100);
 // Sort by absolute point impact so biggest positive/negative contributors show first.
 const topContributors = team.breakdown
   .slice()
-  .sort((a, b) => Math.abs(b.points) - Math.abs(a.points))
+  .sort((a, b) => a.points - b.points)
   .slice(0, 3)
   .map(item => `${item.opponent}: ${item.points > 0 ? "+" : ""}${item.points}`)
   .join(" | ");
