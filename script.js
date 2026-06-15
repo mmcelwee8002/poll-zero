@@ -382,16 +382,19 @@ const topContributors = team.breakdown
   .map(item => `${item.opponent}: ${item.points > 0 ? "+" : ""}${item.points}`)
   .join(" | ");
 
-  console.log(team.name, topContributors);
+
 
 li.innerHTML = `
 <div class="team-row">
   <span>${currentRank}. ${logo} ${team.name} ${movement}</span>
-  <span class="rating-value">
+  <span
+    class="rating-value"
+    title="${topContributors}"
+  >
     ${team.rating.toFixed(1)}
   </span>
 </div>
-  </div>
+  
 
   <div class="rating-bar">
     <div class="rating-fill" style="width: ${barWidth}%; background: ${barColor};"></div>
