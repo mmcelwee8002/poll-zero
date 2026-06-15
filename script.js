@@ -389,13 +389,8 @@ li.innerHTML = `
 <span class="rating-value score-hover">
   ${team.rating.toFixed(1)}
 
-  <span class="score-tooltip">
-    <strong>Poll Zero Breakdown</strong><br><br>
-    ${topContributors.replaceAll(" | ", "<br>")}<br><br>
-    Total Points: ${team.score}<br>
-    Games Played: ${team.gamesPlayed}<br><br>
-    ${team.score} ÷ ${team.gamesPlayed} = ${team.rating.toFixed(1)}
-  </span>
+<span class="rating-value score-hover">
+  ${team.rating.toFixed(1)}
 </span>
   </div>
 
