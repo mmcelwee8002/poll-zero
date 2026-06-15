@@ -382,7 +382,7 @@ const topContributors = team.breakdown
   .map(item => `${item.opponent}: ${item.points > 0 ? "+" : ""}${item.points}`)
   .join(" | ");
 
-  
+  console.log(team.name, topContributors);
 
 li.innerHTML = `
 <div class="team-row">
