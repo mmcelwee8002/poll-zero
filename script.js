@@ -386,16 +386,19 @@ const topNegative = team.breakdown
   .slice(0, 2);
 
 const topContributors = [
+  "Poll Zero Breakdown",
+  "",
   "Top Positive",
-  ...topPositive.map(item =>
-    `${item.opponent}: +${item.points}`
-  ),
+  ...topPositive.map(item => `${item.opponent}: +${item.points}`),
   "",
   "Top Negative",
-  ...topNegative.map(item =>
-    `${item.opponent}: ${item.points}`
-  )
-].join(" | ");
+  ...topNegative.map(item => `${item.opponent}: ${item.points}`),
+  "",
+  `Total Points: ${team.score}`,
+  `Games Played: ${team.gamesPlayed}`,
+  "",
+  `${team.score} ÷ ${team.gamesPlayed} = ${team.rating.toFixed(1)}`
+].join("\n");
 
 
 
