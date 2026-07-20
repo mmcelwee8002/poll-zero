@@ -406,9 +406,9 @@ li.innerHTML = `
 <div class="team-row">
   <span>${currentRank}. ${logo} ${team.name} ${movement}</span>
   <span
-  <span
+  
   class="rating-value breakdown-trigger"
-  title="${topContributors}"
+  
   data-breakdown="${topContributors}"
 >
     ${team.rating.toFixed(1)}
