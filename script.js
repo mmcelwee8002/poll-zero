@@ -429,6 +429,8 @@ li.innerHTML = `
   list.appendChild(li);});
 }
 
+
+const breakdownPopup = document.getElementById("breakdown-popup");
 document.addEventListener("mouseover", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
 
