@@ -430,15 +430,18 @@ li.innerHTML = `
   list.appendChild(li);});
 }
 
-const breakdownPopup = document.getElementById("breakdown-popup");
-
 document.addEventListener("mouseover", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
 
   if (!trigger) return;
 
+  const triggerPosition = trigger.getBoundingClientRect();
+
   breakdownPopup.textContent = trigger.dataset.breakdown;
   breakdownPopup.style.display = "block";
+
+  breakdownPopup.style.left = `${triggerPosition.right + 10}px`;
+  breakdownPopup.style.top = `${triggerPosition.top}px`;
 });
 
 window.loadRankings = loadRankings;
