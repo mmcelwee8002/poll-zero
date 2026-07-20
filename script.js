@@ -441,9 +441,17 @@ document.addEventListener("mouseover", (event) => {
 
   breakdownPopup.textContent = trigger.dataset.breakdown;
   breakdownPopup.style.display = "block";
-
+  
   breakdownPopup.style.left = `${triggerPosition.right + 10}px`;
-  breakdownPopup.style.top = `${triggerPosition.top}px`;
+  
+  const popupHeight = breakdownPopup.offsetHeight;
+  const bottomSpace = window.innerHeight - triggerPosition.top;
+  
+  if (bottomSpace < popupHeight + 10) {
+    breakdownPopup.style.top = `${window.innerHeight - popupHeight - 10}px`;
+  } else {
+    breakdownPopup.style.top = `${triggerPosition.top}px`;
+  }
 
   document.addEventListener("mouseout", (event) => {
     const trigger = event.target.closest(".breakdown-trigger");
