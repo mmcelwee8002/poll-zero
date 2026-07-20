@@ -431,6 +431,7 @@ li.innerHTML = `
 
 
 const breakdownPopup = document.getElementById("breakdown-popup");
+
 document.addEventListener("mouseover", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
 
@@ -443,6 +444,15 @@ document.addEventListener("mouseover", (event) => {
 
   breakdownPopup.style.left = `${triggerPosition.right + 10}px`;
   breakdownPopup.style.top = `${triggerPosition.top}px`;
+
+  document.addEventListener("mouseout", (event) => {
+    const trigger = event.target.closest(".breakdown-trigger");
+  
+    if (!trigger) return;
+  
+    breakdownPopup.style.display = "none";
+  });
+
 });
 
 window.loadRankings = loadRankings;
