@@ -221,6 +221,25 @@ footer {
   font-style: italic;
 }
 
+.breakdown-popup {
+  position: fixed;
+  display: none;
+  z-index: 1000;
+
+  max-width: 280px;
+  padding: 10px 12px;
+
+  background: rgba(20, 20, 20, 0.95);
+  color: white;
+
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+
+  pointer-events: none;
+}
+
+
 /* Poll Zero score breakdown tooltip */
 
 /* .score-hover {
