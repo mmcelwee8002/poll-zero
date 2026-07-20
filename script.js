@@ -436,7 +436,7 @@ document.addEventListener("mouseover", (event) => {
 
   const triggerPosition = trigger.getBoundingClientRect();
 
-  breakdownPopup.textContent = trigger.dataset.breakdown;
+  breakdownPopup.textContent = "Popup test";
   breakdownPopup.style.display = "block";
 
   breakdownPopup.style.left = `${triggerPosition.right + 10}px`;
