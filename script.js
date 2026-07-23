@@ -429,12 +429,18 @@ li.innerHTML = `
   list.appendChild(li);});
 }
 
+const supportsHover = window.matchMedia(
+  "(hover: hover) and (pointer: fine)"
+).matches;
+
 
 const breakdownPopup = document.getElementById("breakdown-popup");
 let activeBreakdownTrigger = null;
 let ignorePopupScrollUntil = 0;
 
 document.addEventListener("mouseover", (event) => {
+  if (!supportsHover) return;
+
   const trigger = event.target.closest(".breakdown-trigger");
 
   if (!trigger) return;
@@ -463,6 +469,7 @@ if (rightSpace < popupWidth + 10) {
   }
 
   document.addEventListener("mouseout", (event) => {
+    if (!supportsHover) return;
     const trigger = event.target.closest(".breakdown-trigger");
   
     if (!trigger) return;
