@@ -438,7 +438,7 @@ const breakdownPopup = document.getElementById("breakdown-popup");
 let activeBreakdownTrigger = null;
 let ignorePopupScrollUntil = 0;
 let ignorePopupMouseoutUntil = 0;
-let lastTouchTime = 0;
+
 
 document.addEventListener("mouseover", (event) => {
   
@@ -469,18 +469,7 @@ if (rightSpace < popupWidth + 10) {
     breakdownPopup.style.top = `${triggerPosition.top}px`;
   }
 
-  document.addEventListener("pointerdown", (event) => {
-    if (event.pointerType === "touch") {
-      lastTouchTime = Date.now();
-    }
-  });
-
-  document.addEventListener("pointerout", (event) => {
-    // Ignore synthetic mouse events created by a recent mobile tap
-    if (Date.now() - lastTouchTime < 2000) return;
-  
-    if (event.pointerType !== "mouse") return;
-  
+  document.addEventListener("mouseout", (event) => {
     const trigger = event.target.closest(".breakdown-trigger");
   
     if (!trigger) return;
@@ -489,7 +478,7 @@ if (rightSpace < popupWidth + 10) {
   });
 
   window.addEventListener("scroll", () => {
-    // if (Date.now() < ignorePopupScrollUntil) return;
+    if (Date.now() < ignorePopupScrollUntil) return;
   
     breakdownPopup.style.display = "none";
     activeBreakdownTrigger = null;
