@@ -439,8 +439,7 @@ let activeBreakdownTrigger = null;
 let ignorePopupScrollUntil = 0;
 
 document.addEventListener("mouseover", (event) => {
-  if (!supportsHover) return;
-
+  
   const trigger = event.target.closest(".breakdown-trigger");
 
   if (!trigger) return;
@@ -469,7 +468,7 @@ if (rightSpace < popupWidth + 10) {
   }
 
   document.addEventListener("mouseout", (event) => {
-    if (!supportsHover) return;
+   
     const trigger = event.target.closest(".breakdown-trigger");
   
     if (!trigger) return;
