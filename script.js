@@ -472,6 +472,40 @@ if (rightSpace < popupWidth + 10) {
     breakdownPopup.style.display = "none";
   });
 
+//click funtionality
+
+document.addEventListener("click", (event) => {
+  const trigger = event.target.closest(".breakdown-trigger");
+
+  if (!trigger) return;
+
+  const triggerPosition = trigger.getBoundingClientRect();
+
+  breakdownPopup.textContent = trigger.dataset.breakdown;
+  breakdownPopup.style.display = "block";
+
+  const popupWidth = breakdownPopup.offsetWidth;
+  const rightSpace = window.innerWidth - triggerPosition.right;
+
+  if (rightSpace < popupWidth + 10) {
+    breakdownPopup.style.left =
+      `${triggerPosition.left - popupWidth - 10}px`;
+  } else {
+    breakdownPopup.style.left =
+      `${triggerPosition.right + 10}px`;
+  }
+
+  const popupHeight = breakdownPopup.offsetHeight;
+  const bottomSpace = window.innerHeight - triggerPosition.top;
+
+  if (bottomSpace < popupHeight + 10) {
+    breakdownPopup.style.top =
+      `${window.innerHeight - popupHeight - 10}px`;
+  } else {
+    breakdownPopup.style.top = `${triggerPosition.top}px`;
+  }
+});
+
 });
 
 window.loadRankings = loadRankings;
