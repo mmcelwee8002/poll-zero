@@ -468,6 +468,10 @@ if (rightSpace < popupWidth + 10) {
     breakdownPopup.style.display = "none";
   });
 
+  window.addEventListener("scroll", () => {
+    breakdownPopup.style.display = "none";
+  });
+
 });
 
 window.loadRankings = loadRankings;
