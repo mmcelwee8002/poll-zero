@@ -477,7 +477,10 @@ if (rightSpace < popupWidth + 10) {
 document.addEventListener("click", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
 
-  if (!trigger) return;
+  if (!trigger) {
+    breakdownPopup.style.display = "none";
+    return;
+  }
 
   const triggerPosition = trigger.getBoundingClientRect();
 
