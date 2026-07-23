@@ -437,6 +437,7 @@ const supportsHover = window.matchMedia(
 const breakdownPopup = document.getElementById("breakdown-popup");
 let activeBreakdownTrigger = null;
 let ignorePopupScrollUntil = 0;
+let ignorePopupMouseoutUntil = 0;
 
 document.addEventListener("mouseover", (event) => {
   
@@ -468,7 +469,7 @@ if (rightSpace < popupWidth + 10) {
   }
 
   document.addEventListener("mouseout", (event) => {
-   
+    if (Date.now() < ignorePopupMouseoutUntil) return;
     const trigger = event.target.closest(".breakdown-trigger");
   
     if (!trigger) return;
@@ -502,6 +503,7 @@ document.addEventListener("click", (event) => {
   }
 
   activeBreakdownTrigger = trigger;
+  ignorePopupMouseoutUntil = Date.now() + 700;
   ignorePopupScrollUntil = Date.now() + 500;
 
   const triggerPosition = trigger.getBoundingClientRect();
