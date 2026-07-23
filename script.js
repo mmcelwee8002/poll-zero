@@ -473,6 +473,7 @@ if (rightSpace < popupWidth + 10) {
   });
 
 //click funtionality
+//blank
 
 document.addEventListener("click", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
