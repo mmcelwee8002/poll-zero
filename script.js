@@ -431,6 +431,7 @@ li.innerHTML = `
 
 
 const breakdownPopup = document.getElementById("breakdown-popup");
+let activeBreakdownTrigger = null;
 
 document.addEventListener("mouseover", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
@@ -478,10 +479,19 @@ if (rightSpace < popupWidth + 10) {
 document.addEventListener("click", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
 
-  if (!trigger) {
+  if (trigger === activeBreakdownTrigger) {
     breakdownPopup.style.display = "none";
+    activeBreakdownTrigger = null;
     return;
   }
+
+  if (!trigger) {
+    breakdownPopup.style.display = "none";
+    activeBreakdownTrigger = null;
+    return;
+  }
+
+  activeBreakdownTrigger = trigger;
 
   const triggerPosition = trigger.getBoundingClientRect();
 
