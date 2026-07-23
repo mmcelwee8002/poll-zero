@@ -432,6 +432,7 @@ li.innerHTML = `
 
 const breakdownPopup = document.getElementById("breakdown-popup");
 let activeBreakdownTrigger = null;
+let ignorePopupScrollUntil = 0;
 
 document.addEventListener("mouseover", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
@@ -470,7 +471,10 @@ if (rightSpace < popupWidth + 10) {
   });
 
   window.addEventListener("scroll", () => {
+    if (Date.now() < ignorePopupScrollUntil) return;
+  
     breakdownPopup.style.display = "none";
+    activeBreakdownTrigger = null;
   });
 
 //click funtionality
@@ -492,6 +496,7 @@ document.addEventListener("click", (event) => {
   }
 
   activeBreakdownTrigger = trigger;
+  ignorePopupScrollUntil = Date.now() + 500;
 
   const triggerPosition = trigger.getBoundingClientRect();
 
