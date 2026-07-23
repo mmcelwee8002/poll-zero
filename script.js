@@ -435,10 +435,13 @@ const supportsHover = window.matchMedia(
 
 
 const breakdownPopup = document.getElementById("breakdown-popup");
+<<<<<<< HEAD
 let activeBreakdownTrigger = null;
 let ignorePopupScrollUntil = 0;
 let ignorePopupMouseoutUntil = 0;
 
+=======
+>>>>>>> parent of d5625ad (expanded hover 26)
 
 document.addEventListener("mouseover", (event) => {
   
@@ -490,21 +493,10 @@ if (rightSpace < popupWidth + 10) {
 document.addEventListener("click", (event) => {
   const trigger = event.target.closest(".breakdown-trigger");
 
-  if (trigger === activeBreakdownTrigger) {
-    breakdownPopup.style.display = "none";
-    activeBreakdownTrigger = null;
-    return;
-  }
-
   if (!trigger) {
     breakdownPopup.style.display = "none";
-    activeBreakdownTrigger = null;
     return;
   }
-
-  activeBreakdownTrigger = trigger;
-  ignorePopupMouseoutUntil = Date.now() + 700;
-  ignorePopupScrollUntil = Date.now() + 500;
 
   const triggerPosition = trigger.getBoundingClientRect();
 
