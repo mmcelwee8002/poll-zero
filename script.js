@@ -442,7 +442,14 @@ document.addEventListener("mouseover", (event) => {
   breakdownPopup.textContent = trigger.dataset.breakdown;
   breakdownPopup.style.display = "block";
   
+  const popupWidth = breakdownPopup.offsetWidth;
+const rightSpace = window.innerWidth - triggerPosition.right;
+
+if (rightSpace < popupWidth + 10) {
+  breakdownPopup.style.left = `${triggerPosition.left - popupWidth - 10}px`;
+} else {
   breakdownPopup.style.left = `${triggerPosition.right + 10}px`;
+}
   
   const popupHeight = breakdownPopup.offsetHeight;
   const bottomSpace = window.innerHeight - triggerPosition.top;
