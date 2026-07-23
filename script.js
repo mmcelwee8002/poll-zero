@@ -468,8 +468,10 @@ if (rightSpace < popupWidth + 10) {
     breakdownPopup.style.top = `${triggerPosition.top}px`;
   }
 
-  document.addEventListener("mouseout", (event) => {
-    if (Date.now() < ignorePopupMouseoutUntil) return;
+  document.addEventListener("pointerout", (event) => {
+    // Ignore touch and stylus events on mobile
+    if (event.pointerType !== "mouse") return;
+  
     const trigger = event.target.closest(".breakdown-trigger");
   
     if (!trigger) return;
