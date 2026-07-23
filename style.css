@@ -242,6 +242,10 @@ text-align: left;
   pointer-events: none;
 }
 
+.breakdown-trigger {
+  cursor: pointer;
+  border-bottom: 1px dotted currentColor;
+}
 
 /* Poll Zero score breakdown tooltip */
 
