@@ -478,7 +478,7 @@ if (rightSpace < popupWidth + 10) {
   });
 
   window.addEventListener("scroll", () => {
-    if (Date.now() < ignorePopupScrollUntil) return;
+    // if (Date.now() < ignorePopupScrollUntil) return;
   
     breakdownPopup.style.display = "none";
     activeBreakdownTrigger = null;
