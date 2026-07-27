@@ -253,6 +253,11 @@ text-align: left;
   cursor: pointer;
   border-bottom: 1px dotted currentColor;
 }
+.breakdown-trigger:hover {
+  opacity: 0.75;
+}
+
+
 
 /* Poll Zero score breakdown tooltip */
 
