@@ -225,6 +225,8 @@ footer {
   position: fixed;
   display: none;
   z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 
   max-width: 320px;
   padding: 10px 12px;
