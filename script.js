@@ -391,10 +391,10 @@ const topNegative = team.breakdown
 const topContributors = [
   "<strong>Poll Zero Breakdown</strong>",
   "",
-  '<strong class="breakdown-positive">Top Positive</strong>',
+  "<strong>Top Positive</strong>",
   ...topPositive.map(item => `• ${item.opponent}: +${item.points}`),
   "",
-  '<strong class="breakdown-negative">Top Negative</strong>',
+  "<strong>Top Negative</strong>",
   ...topNegative.map(item => `• ${item.opponent}: ${item.points}`),
   "",
   `Total Points: ${team.score}`,
