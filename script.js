@@ -389,7 +389,7 @@ const topNegative = team.breakdown
   .slice(0, 2);
 
 const topContributors = [
-  "Poll Zero Breakdown",
+  "<strong>Poll Zero Breakdown</strong>",
   "",
   "Top Positive",
   ...topPositive.map(item => `• ${item.opponent}: +${item.points}`),
@@ -451,7 +451,7 @@ document.addEventListener("mouseover", (event) => {
 
   const triggerPosition = trigger.getBoundingClientRect();
 
-  breakdownPopup.textContent = trigger.dataset.breakdown;
+  breakdownPopup.innerHTML = trigger.dataset.breakdown;
   breakdownPopup.style.display = "block";
   
   const popupWidth = breakdownPopup.offsetWidth;
@@ -500,7 +500,7 @@ document.addEventListener("click", (event) => {
 
   const triggerPosition = trigger.getBoundingClientRect();
 
-  breakdownPopup.textContent = trigger.dataset.breakdown;
+  breakdownPopup.innerHTML = trigger.dataset.breakdown;
   breakdownPopup.style.display = "block";
 
   const popupWidth = breakdownPopup.offsetWidth;
