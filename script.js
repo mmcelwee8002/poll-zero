@@ -452,6 +452,16 @@ document.addEventListener("mouseover", (event) => {
   const triggerPosition = trigger.getBoundingClientRect();
 
   breakdownPopup.innerHTML = trigger.dataset.breakdown;
+  breakdownPopup.querySelectorAll("strong").forEach((heading) => {
+    if (heading.textContent === "Top Positive") {
+      heading.style.color = "#7CFC90";
+    }
+  
+    if (heading.textContent === "Top Negative") {
+      heading.style.color = "#ff8080";
+    }
+  });
+
   breakdownPopup.style.display = "block";
   
   const popupWidth = breakdownPopup.offsetWidth;
@@ -501,6 +511,16 @@ document.addEventListener("click", (event) => {
   const triggerPosition = trigger.getBoundingClientRect();
 
   breakdownPopup.innerHTML = trigger.dataset.breakdown;
+  breakdownPopup.querySelectorAll("strong").forEach((heading) => {
+    if (heading.textContent === "Top Positive") {
+      heading.style.color = "#7CFC90";
+    }
+  
+    if (heading.textContent === "Top Negative") {
+      heading.style.color = "#ff8080";
+    }
+  });
+  
   breakdownPopup.style.display = "block";
 
   const popupWidth = breakdownPopup.offsetWidth;
