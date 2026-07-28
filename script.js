@@ -324,7 +324,7 @@ if (selectedWeek !== "all") {
   if (rankings.length === 0) {
     list.innerHTML = `
       <li class="no-rankings-message">
-        Poll Zero rankings will appear after the first completed games of the 2026 season.
+        Poll Zero rankings will appear after the first completed games of the ${selectedYear} season.
       </li>
     `;
   
