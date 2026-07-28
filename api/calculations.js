@@ -234,10 +234,11 @@ export default async function handler(req, res) {
 
 
     } catch (error) {
-      console.error("Calculation endpoint error:", error);
-  
-      return res.status(500).json({
-        message: "Calculation endpoint failed"
-      });
-    }
+        console.error("Calculation endpoint error:", error);
+      
+        return res.status(500).json({
+          message: "Calculation endpoint failed",
+          error: error.message
+        });
+      }
   }
