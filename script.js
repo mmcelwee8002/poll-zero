@@ -569,7 +569,7 @@ document.addEventListener("click", (event) => {
 });
 
 });
-
+//test
 yearSelect.addEventListener("change", () => {
   loadRankings();
 });
