@@ -284,7 +284,7 @@ function buildOfficialRankMap(officialRankings, selectedWeek) {
 
 async function loadRankings() {
 
-const selectedYear = document.getElementById("year-select").value;
+const selectedYear = document.getElementById("year").value;
 const selectedWeek = document.getElementById("week-select").value;
 
 document.getElementById("page-title").textContent =
@@ -569,7 +569,7 @@ document.addEventListener("click", (event) => {
 });
 
 });
-//test
+
 yearSelect.addEventListener("change", () => {
   loadRankings();
 });
