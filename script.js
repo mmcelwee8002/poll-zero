@@ -570,6 +570,8 @@ document.addEventListener("click", (event) => {
 
 });
 
-yearSelect.addEventListener("change", loadRankings);
+yearSelect.addEventListener("change", () => {
+  loadRankings();
+});
 
 window.loadRankings = loadRankings;
