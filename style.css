@@ -257,7 +257,14 @@ text-align: left;
   opacity: 0.75;
 }
 
-
+.no-rankings-message {
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 10px 0;
+  text-align: center;
+  font-weight: normal;
+}
 
 /* Poll Zero score breakdown tooltip */
 
