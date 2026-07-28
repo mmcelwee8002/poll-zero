@@ -574,4 +574,10 @@ yearSelect.addEventListener("change", () => {
   loadRankings();
 });
 
+const weekSelect = document.getElementById("week-select");
+
+weekSelect.addEventListener("change", () => {
+  loadRankings();
+});
+
 window.loadRankings = loadRankings;
