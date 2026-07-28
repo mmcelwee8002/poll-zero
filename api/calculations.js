@@ -32,6 +32,10 @@ function calculateTeamScore(games) {
     return total;
   }
 
+  function isNonFBS(classification) {
+    return classification && classification.toLowerCase() !== "fbs";
+  }
+
   function buildPollZeroRankings(games, selectedWeek) {
     const teams = {};
   
