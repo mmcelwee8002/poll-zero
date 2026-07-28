@@ -1,4 +1,17 @@
 
+const yearSelect = document.getElementById("year");
+const currentYear = new Date().getFullYear();
+
+for (let year = currentYear; year >= currentYear - 3; year--) {
+  const option = document.createElement("option");
+
+  option.value = year;
+  option.textContent = year;
+
+  yearSelect.appendChild(option);
+}
+
+
 const SEASON_YEAR = 2025;
 function getMinimumGames(week) {
   if (week <= 1) return 1;
