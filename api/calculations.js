@@ -1,3 +1,29 @@
+
+function calculateTeamScore(games) {
+    let total = 0;
+  
+    games.forEach(game => {
+      let opponentWins = game.opponentWins;
+      let opponentLosses = game.opponentLosses;
+  
+      if (game.nonFBS) {
+        opponentWins = 1;
+        opponentLosses = 11;
+      }
+  
+      if (game.result === "win") {
+        total += 5 + opponentWins;
+      }
+  
+      if (game.result === "loss") {
+        total += -5 - opponentLosses;
+      }
+    });
+  
+    return total;
+  }
+
+
 export default async function handler(req, res) {
     const { year, week } = req.query;
   
