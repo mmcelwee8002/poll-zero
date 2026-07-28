@@ -1,4 +1,13 @@
 
+
+function getMinimumGames(week) {
+    if (week <= 1) return 1;
+    if (week <= 3) return 2;
+    if (week <= 6) return 3;
+    if (week <= 9) return 5;
+    return 6;
+  }
+
 function calculateTeamScore(games) {
     let total = 0;
   
