@@ -178,7 +178,7 @@ function calculateTeamScore(games) {
   return eligibleTeams.sort((a, b) => b.avgScore - a.avgScore);
   
   }
-  
+
 export default async function handler(req, res) {
     const { year, week } = req.query;
   
@@ -194,9 +194,7 @@ export default async function handler(req, res) {
       `&seasonType=regular` +
       `&classification=fbs`;
   
-    if (week && week !== "all") {
-      url += `&week=${week}`;
-    }
+
   
     try {
       const response = await fetch(url, {
@@ -212,12 +210,29 @@ export default async function handler(req, res) {
       }
   
       const games = await response.json();
-  
+
+      const selectedWeek = week || "all";
+      
+      const filteredGames =
+        selectedWeek === "all"
+          ? games
+          : games.filter(
+              (game) => game.week <= Number(selectedWeek)
+            );
+      
+      const rankings = buildPollZeroRankings(
+        filteredGames,
+        selectedWeek
+      );
+      
       return res.status(200).json({
         year,
-        week: week || "all",
-        gameCount: games.length
+        week: selectedWeek,
+        gameCount: filteredGames.length,
+        rankings
       });
+
+
     } catch (error) {
       console.error("Calculation endpoint error:", error);
   
