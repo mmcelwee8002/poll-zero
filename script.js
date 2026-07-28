@@ -12,7 +12,7 @@ for (let year = currentYear; year >= currentYear - 3; year--) {
 }
 
 
-const SEASON_YEAR = 2025;
+
 function getMinimumGames(week) {
   if (week <= 1) return 1;
   if (week <= 3) return 2;
