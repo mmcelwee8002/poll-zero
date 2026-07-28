@@ -321,6 +321,16 @@ if (selectedWeek !== "all") {
 
   list.innerHTML = "";
 
+  if (rankings.length === 0) {
+    list.innerHTML = `
+      <li class="no-rankings-message">
+        Poll Zero rankings will appear after the first completed games of the 2026 season.
+      </li>
+    `;
+  
+    return;
+  } 
+
 rankings.slice(0, 25).forEach((team, index) => {
 const currentRank = index + 1;
 const previousRank = previousRankMap[team.name];
