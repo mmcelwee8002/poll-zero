@@ -351,12 +351,12 @@ async function loadRankings() {
       apPoll.ranks.slice(0, 25).forEach(item => {
         const li = document.createElement("li");
         li.classList.add("ap-only-row");
-        li.style.backgroundColor = "#232323";
-        li.style.color = "#ffffff";
 
         li.innerHTML = `
-  <div class="team-row" style="color: #ffffff;">
-    <span style="color: #ffffff;">${item.rank}. ${item.school}</span>
+  <div class="ap-only-team">
+    <span class="ap-rank">${item.rank}.</span>
+    <span class="ap-team-name">${item.school}</span>
+    <span class="ap-label">AP</span>
   </div>
 `;
 

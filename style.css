@@ -211,13 +211,33 @@ footer {
   text-align: left;
 }
 
+/* Week 1 uses the AP Top 25 while Poll Zero gathers data */
 .ap-only-row {
-  background-color: #232323;
-  color: #ffffff;
+  background: #d7f0df;
+  color: #111;
+  min-height: 0;
+  padding: 14px 16px;
+  margin-bottom: 8px;
 }
 
-.ap-only-row .team-row {
-  color: #ffffff;
+.ap-only-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}
+
+.ap-rank {
+  min-width: 24px;
+}
+
+.ap-team-name {
+  flex: 1;
+}
+
+.ap-label {
+  font-size: 0.75rem;
+  opacity: 0.65;
 }
 
 .formula-note {
