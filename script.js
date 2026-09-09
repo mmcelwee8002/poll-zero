@@ -191,7 +191,7 @@ function buildPollZeroRankings(games, selectedWeek) {
     }
   });
 
-  // Only FBS teams can appear in Poll Zero rankings.
+// Only FBS teams can appear in Poll Zero rankings.
 // Non-FBS teams still participate in score calculations as 1-11 opponents.
 const teamList = Object.values(teams).filter(team => {
   const teamGame = games.find(game =>
@@ -298,14 +298,8 @@ function buildOfficialRankMap(officialRankings, selectedWeek) {
 
 async function loadRankings() {
 
-  // TEMP: Check how North Dakota State is classified by the API.
-console.log(
-  "NDSU games:",
-  games.filter(game =>
-    game.homeTeam === "North Dakota State" ||
-    game.awayTeam === "North Dakota State"
-  )
-);
+
+
 
   const selectedYear = document.getElementById("year").value;
   const selectedWeek = document.getElementById("week-select").value;
@@ -316,6 +310,16 @@ console.log(
   const weekParam = selectedWeek === "all" ? "" : selectedWeek;
 
   let games = await fetchGames(selectedYear);
+
+  // TEMP: Check how North Dakota State is classified by the API.
+console.log(
+  "NDSU games:",
+  games.filter(game =>
+    game.homeTeam === "North Dakota State" ||
+    game.awayTeam === "North Dakota State"
+  )
+);
+
   // TEMP: Check how the API labels 2026 game weeks
   console.log("Games from API:", games);
 
