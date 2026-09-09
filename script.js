@@ -309,6 +309,14 @@ async function loadRankings() {
   // This lets us compare Poll Zero against human / committee rankings.
   let officialRankings = [];
 
+  // Load the official AP / CFP rankings for the selected week.
+if (selectedWeek !== "all") {
+  officialRankings = await fetchOfficialRankings(
+    selectedYear,
+    selectedWeek
+  );
+}
+
   // Use Poll Zero week numbering when filtering games.
 // In 2026, API Week 1 becomes Poll Zero Week 0.
 // if (selectedWeek !== "all") {
