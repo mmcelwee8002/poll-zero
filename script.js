@@ -388,7 +388,7 @@ if (Number(selectedWeek) === 2) {
     <span>Early-season ratings are still developing.</span>
   `;
 
-  list.before(previewMessage);
+  list.appendChild(previewMessage);
 }
 
 
