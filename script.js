@@ -83,9 +83,9 @@ function buildPollZeroRankings(games, selectedWeek) {
   const teams = {};
 
   games.forEach(game => {
-    if (selectedWeek !== "all" && game.week > Number(selectedWeek)) {
-      return;
-    }
+    // if (selectedWeek !== "all" && game.week > Number(selectedWeek)) {
+    //   return;
+    // }
 
 
     const homeTeam = game.homeTeam;
