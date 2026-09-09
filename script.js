@@ -336,6 +336,35 @@ if (selectedWeek !== "all") {
 
   console.log("Official rank map:", officialRankMap);
 
+// Week 1 uses AP Top 25 only.
+// Poll Zero begins as a preview in Week 2.
+if (Number(selectedWeek) === 1) {
+  const apPoll = officialRankings[0]?.polls?.find(
+    poll => poll.poll === "AP Top 25"
+  );
+
+  if (apPoll) {
+    const list = document.getElementById("rankings");
+
+    list.innerHTML = "";
+
+    apPoll.ranks.slice(0, 25).forEach(item => {
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        <div class="team-row">
+          <span>${item.rank}. ${item.school}</span>
+        </div>
+      `;
+
+      list.appendChild(li);
+    });
+
+    return;
+  }
+}
+
+
   let previousRankMap = {};
 
   if (selectedWeek !== "all" && Number(selectedWeek) > 0) {
