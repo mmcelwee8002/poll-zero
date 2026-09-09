@@ -293,6 +293,8 @@ document.getElementById("page-title").textContent =
  const weekParam = selectedWeek === "all" ? "" : selectedWeek;
 
 let games = await fetchGames(selectedYear);
+// TEMP: Check how the API labels 2026 game weeks
+console.log("Games from API:", games);
 
 // Get AP / CFP rankings for the selected week.
 // This lets us compare Poll Zero against human / committee rankings.
