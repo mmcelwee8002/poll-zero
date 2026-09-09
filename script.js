@@ -194,7 +194,8 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
 // Only official FBS teams can appear in Poll Zero rankings.
 // FCS teams still participate in the calculations as opponents.
 const teamList = Object.values(teams).filter(team =>
-  fbsTeamNames.has(team.name)
+  fbsTeamNames.has(team.name) &&
+  !excludedFromPollZeroRankings.has(team.name)
 );
 
 
@@ -415,9 +416,9 @@ console.log(
     previousRankMap = getRankMap(prevRankings);
   }
 
-  // if (selectedWeek !== "all") {
-  //   games = games.filter(game => game.week <= Number(selectedWeek));
-  // }
+  if (selectedWeek !== "all") {
+    games = games.filter(game => game.week <= Number(selectedWeek));
+  }
  const rankings = buildPollZeroRankings(
   games,
   selectedWeek,
@@ -553,6 +554,12 @@ console.log(
     list.appendChild(li);
   });
 }
+
+// Teams that should participate in game calculations
+// but should never appear in Poll Zero FBS rankings.
+const excludedFromPollZeroRankings = new Set([
+  "North Dakota State"
+]);
 
 const supportsHover = window.matchMedia(
   "(hover: hover) and (pointer: fine)"
