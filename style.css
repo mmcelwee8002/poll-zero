@@ -211,7 +211,14 @@ footer {
   text-align: left;
 }
 
+.ap-only-row {
+  background-color: #232323;
+  color: #ffffff;
+}
 
+.ap-only-row .team-row {
+  color: #ffffff;
+}
 
 .formula-note {
   font-size: 13px;

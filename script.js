@@ -350,6 +350,7 @@ if (Number(selectedWeek) === 1) {
 
     apPoll.ranks.slice(0, 25).forEach(item => {
       const li = document.createElement("li");
+      li.classList.add("ap-only-row");
 
       li.innerHTML = `
         <div class="team-row">
