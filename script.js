@@ -315,6 +315,13 @@ async function loadRankings() {
 // This determines which teams are eligible to appear in Poll Zero.
 const fbsTeamNames = await fetchFBSTeamNames();
 
+// TEMP: verify whether the teams endpoint thinks NDSU is FBS
+console.log(
+  "NDSU in FBS team list:",
+  fbsTeamNames.has("North Dakota State")
+);
+
+
   // TEMP: Check how North Dakota State is classified by the API.
 console.log(
   "NDSU games:",
@@ -341,11 +348,11 @@ console.log(
 
   // Use Poll Zero week numbering when filtering games.
   // In 2026, API Week 1 becomes Poll Zero Week 0.
-  // if (selectedWeek !== "all") {
-  //   games = games.filter(
-  //     game => getPollZeroWeek(game.week, selectedYear) <= Number(selectedWeek)
-  //   );
-  // }
+  if (selectedWeek !== "all") {
+    games = games.filter(
+      game => getPollZeroWeek(game.week, selectedYear) <= Number(selectedWeek)
+    );
+  }
 
   // Build lookup table:
   // Indiana -> 8
