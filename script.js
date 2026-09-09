@@ -298,6 +298,15 @@ function buildOfficialRankMap(officialRankings, selectedWeek) {
 
 async function loadRankings() {
 
+  // TEMP: Check how North Dakota State is classified by the API.
+console.log(
+  "NDSU games:",
+  games.filter(game =>
+    game.homeTeam === "North Dakota State" ||
+    game.awayTeam === "North Dakota State"
+  )
+);
+
   const selectedYear = document.getElementById("year").value;
   const selectedWeek = document.getElementById("week-select").value;
 
