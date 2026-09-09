@@ -79,7 +79,7 @@ function isNonFBS(classification) {
   return classification && classification.toLowerCase() !== "fbs";
 }
 
-function buildPollZeroRankings(games, selectedWeek) {
+function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
   const teams = {};
 
   games.forEach(game => {
@@ -191,21 +191,11 @@ function buildPollZeroRankings(games, selectedWeek) {
     }
   });
 
-// Only FBS teams can appear in Poll Zero rankings.
-// Non-FBS teams still participate in score calculations as 1-11 opponents.
-const teamList = Object.values(teams).filter(team => {
-  const teamGame = games.find(game =>
-    game.homeTeam === team.name || game.awayTeam === team.name
-  );
-
-  if (!teamGame) return false;
-
-  if (teamGame.homeTeam === team.name) {
-    return teamGame.homeClassification?.toLowerCase() === "fbs";
-  }
-
-  return teamGame.awayClassification?.toLowerCase() === "fbs";
-});
+// Only official FBS teams can appear in Poll Zero rankings.
+// FCS teams still participate in the calculations as opponents.
+const teamList = Object.values(teams).filter(team =>
+  fbsTeamNames.has(team.name)
+);
 
 
 
@@ -256,6 +246,16 @@ async function fetchTeamLogos() {
   });
 
   return logoMap;
+}
+
+// Get the official list of FBS teams.
+// This is used to prevent FCS teams from appearing in Poll Zero rankings,
+// even if an individual game is incorrectly labeled by the API.
+async function fetchFBSTeamNames() {
+  const response = await fetch("/api/teams");
+  const data = await response.json();
+
+  return new Set(data.map(team => team.school));
 }
 
 // Use AP rankings before CFP rankings exist.
@@ -310,6 +310,10 @@ async function loadRankings() {
   const weekParam = selectedWeek === "all" ? "" : selectedWeek;
 
   let games = await fetchGames(selectedYear);
+
+  // Load the official FBS team list.
+// This determines which teams are eligible to appear in Poll Zero.
+const fbsTeamNames = await fetchFBSTeamNames();
 
   // TEMP: Check how North Dakota State is classified by the API.
 console.log(
@@ -395,16 +399,28 @@ console.log(
       game => getPollZeroWeek(game.week, selectedYear) <= prevWeek
     );
 
-    const prevRankings = buildPollZeroRankings(prevGames, prevWeek);
+    const prevRankings = buildPollZeroRankings(
+  prevGames,
+  prevWeek,
+  fbsTeamNames
+);
 
     previousRankMap = getRankMap(prevRankings);
   }
 
-  if (selectedWeek !== "all") {
-    games = games.filter(game => game.week <= Number(selectedWeek));
-  }
-  const rankings = buildPollZeroRankings(games, selectedWeek);
+  // if (selectedWeek !== "all") {
+  //   games = games.filter(game => game.week <= Number(selectedWeek));
+  // }
+ const rankings = buildPollZeroRankings(
+  games,
+  selectedWeek,
+  fbsTeamNames
+);
   const logoMap = await fetchTeamLogos();
+
+  
+
+
   const list = document.getElementById("rankings");
 
   list.innerHTML = "";
