@@ -191,16 +191,21 @@ function buildPollZeroRankings(games, selectedWeek) {
     }
   });
 
-  const teamList = Object.values(teams).filter(team => {
-    const teamGames = games.filter(game =>
-      game.homeTeam === team.name || game.awayTeam === team.name
-    );
+  // Only FBS teams can appear in Poll Zero rankings.
+// Non-FBS teams still participate in score calculations as 1-11 opponents.
+const teamList = Object.values(teams).filter(team => {
+  const teamGame = games.find(game =>
+    game.homeTeam === team.name || game.awayTeam === team.name
+  );
 
-    return teamGames.some(game =>
-      (game.homeTeam === team.name && game.homeClassification === "fbs") ||
-      (game.awayTeam === team.name && game.awayClassification === "fbs")
-    );
-  });
+  if (!teamGame) return false;
+
+  if (teamGame.homeTeam === team.name) {
+    return teamGame.homeClassification?.toLowerCase() === "fbs";
+  }
+
+  return teamGame.awayClassification?.toLowerCase() === "fbs";
+});
 
 
 
