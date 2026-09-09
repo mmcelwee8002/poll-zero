@@ -310,20 +310,20 @@ async function loadRankings() {
   let officialRankings = [];
 
   // Load the official AP / CFP rankings for the selected week.
-if (selectedWeek !== "all") {
-  officialRankings = await fetchOfficialRankings(
-    selectedYear,
-    selectedWeek
-  );
-}
+  if (selectedWeek !== "all") {
+    officialRankings = await fetchOfficialRankings(
+      selectedYear,
+      selectedWeek
+    );
+  }
 
   // Use Poll Zero week numbering when filtering games.
-// In 2026, API Week 1 becomes Poll Zero Week 0.
-// if (selectedWeek !== "all") {
-//   games = games.filter(
-//     game => getPollZeroWeek(game.week, selectedYear) <= Number(selectedWeek)
-//   );
-// }
+  // In 2026, API Week 1 becomes Poll Zero Week 0.
+  // if (selectedWeek !== "all") {
+  //   games = games.filter(
+  //     game => getPollZeroWeek(game.week, selectedYear) <= Number(selectedWeek)
+  //   );
+  // }
 
   // Build lookup table:
   // Indiana -> 8
@@ -336,49 +336,51 @@ if (selectedWeek !== "all") {
 
   console.log("Official rank map:", officialRankMap);
 
-// Week 1 uses AP Top 25 only.
-// Poll Zero begins as a preview in Week 2.
-if (Number(selectedWeek) === 1) {
-  const apPoll = officialRankings[0]?.polls?.find(
-    poll => poll.poll === "AP Top 25"
-  );
+  // Week 1 uses AP Top 25 only.
+  // Poll Zero begins as a preview in Week 2.
+  if (Number(selectedWeek) === 1) {
+    const apPoll = officialRankings[0]?.polls?.find(
+      poll => poll.poll === "AP Top 25"
+    );
 
-  if (apPoll) {
-    const list = document.getElementById("rankings");
+    if (apPoll) {
+      const list = document.getElementById("rankings");
 
-    list.innerHTML = "";
+      list.innerHTML = "";
 
-    apPoll.ranks.slice(0, 25).forEach(item => {
-      const li = document.createElement("li");
-      li.classList.add("ap-only-row");
+      apPoll.ranks.slice(0, 25).forEach(item => {
+        const li = document.createElement("li");
+        li.classList.add("ap-only-row");
+        li.style.backgroundColor = "#232323";
+        li.style.color = "#ffffff";
 
-      li.innerHTML = `
-        <div class="team-row">
-          <span>${item.rank}. ${item.school}</span>
-        </div>
-      `;
+        li.innerHTML = `
+  <div class="team-row" style="color: #ffffff;">
+    <span style="color: #ffffff;">${item.rank}. ${item.school}</span>
+  </div>
+`;
 
-      list.appendChild(li);
-    });
+        list.appendChild(li);
+      });
 
-    return;
+      return;
+    }
   }
-}
 
 
   let previousRankMap = {};
 
   if (selectedWeek !== "all" && Number(selectedWeek) > 0) {
-  const prevWeek = Number(selectedWeek) - 1;
+    const prevWeek = Number(selectedWeek) - 1;
 
-  const prevGames = games.filter(
-    game => getPollZeroWeek(game.week, selectedYear) <= prevWeek
-  );
+    const prevGames = games.filter(
+      game => getPollZeroWeek(game.week, selectedYear) <= prevWeek
+    );
 
-  const prevRankings = buildPollZeroRankings(prevGames, prevWeek);
+    const prevRankings = buildPollZeroRankings(prevGames, prevWeek);
 
-  previousRankMap = getRankMap(prevRankings);
-}
+    previousRankMap = getRankMap(prevRankings);
+  }
 
   if (selectedWeek !== "all") {
     games = games.filter(game => game.week <= Number(selectedWeek));
