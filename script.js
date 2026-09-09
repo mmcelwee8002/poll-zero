@@ -378,20 +378,6 @@ console.log(
 
       list.innerHTML = "";
 
-// Week 2 is an early look at Poll Zero.
-// The model is active, but opponent outcomes are still developing.
-if (Number(selectedWeek) === 2) {
-  const previewMessage = document.createElement("div");
-  previewMessage.className = "poll-zero-preview";
-  previewMessage.innerHTML = `
-    <strong>Poll Zero Preview</strong>
-    <span>Early-season ratings are still developing.</span>
-  `;
-
-  list.appendChild(previewMessage);
-}
-
-
       apPoll.ranks.slice(0, 25).forEach(item => {
         const li = document.createElement("li");
         li.classList.add("ap-only-row");
@@ -446,6 +432,22 @@ if (Number(selectedWeek) === 2) {
   const list = document.getElementById("rankings");
 
   list.innerHTML = "";
+
+// Week 2 is an early Poll Zero preview.
+// Opponent outcome data is still developing.
+if (Number(selectedWeek) === 2) {
+  const previewMessage = document.createElement("li");
+
+  previewMessage.classList.add("poll-zero-preview");
+
+  previewMessage.innerHTML = `
+    <strong>Poll Zero Preview</strong><br>
+    Early-season ratings are still developing.
+  `;
+
+  list.appendChild(previewMessage);
+}
+
 
   if (rankings.length === 0) {
     list.innerHTML = `
