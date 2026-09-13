@@ -54,7 +54,35 @@ check('available Week 3 compares PZ Week 2 and renders normally',()=>{assert.dee
 const rankings=build(games.filter(g=>g.week<=3),2,new Set(names));
 check('NDSU eligible; true FCS excluded; FCS loss -55 and win +5 unchanged',()=>{assert.ok(rankings.some(t=>t.name==='North Dakota State'));assert.ok(!rankings.some(t=>t.name==='FCS'));assert.equal(rankings.find(t=>t.name==='A').score,5);const loss=build([game(1,'A','FCS',0,10,'fcs')],1,new Set(['A']))[0];assert.equal(loss.score,-55);assert.equal(loss.totalOpponentWins,1);assert.equal(loss.totalOpponentLosses,11)});
 check('opponent strength metrics use window records and FCS override',()=>{const a=rankings.find(t=>t.name==='A');assert.equal(a.totalOpponentWins,3);assert.equal(a.totalOpponentLosses,11);assert.equal(a.opponentWinPct,3/14);assert.equal(a.bestOpponentWins,2);assert.equal(a.teamWinPct,0.5);assert.equal(a.rating,2.5)});
-check('all five sorting criteria have strict precedence',()=>{const comparator=vm.runInContext(source.match(/return eligibleTeams.sort\(([\s\S]*?)\n  \);/)[1],ctx);const base={name:'Same',avgScore:1,opponentWinPct:0.5,bestOpponentWins:2,teamWinPct:0.5};for(const key of ['avgScore','opponentWinPct','bestOpponentWins','teamWinPct']){const a={...base,name:'Zulu',[key]:base[key]+1};const b={...base,name:'Alpha'};assert.ok(comparator(a,b)<0,key);assert.ok(comparator(b,a)>0,key)}assert.ok(comparator({...base,name:'Alabama'},{...base,name:'Notre Dame'})<0)});
+check('all five sorting criteria have strict precedence',()=>{
+ const comparator=vm.runInContext(source.match(/return eligibleTeams.sort\(([\s\S]*?)\n  \);/)[1],ctx);
+ const keys=['avgScore','teamWinPct','opponentWinPct','bestOpponentWins'];
+ // Each criterion must beat every lower-priority criterion, including name.
+ for(let i=0;i<keys.length;i++){
+  const a={name:'Zulu'},b={name:'Alpha'};
+  keys.forEach((key,j)=>{a[key]=j===i?2:1;b[key]=j>i?3:1});
+  assert.ok(comparator(a,b)<0,keys[i]);
+  assert.ok(comparator(b,a)>0,keys[i]);
+ }
+ const base={avgScore:1,teamWinPct:0.5,opponentWinPct:0.5,bestOpponentWins:2};
+ assert.ok(comparator({...base,name:'Alabama'},{...base,name:'Notre Dame'})<0);
+});
+check('equally rated 2-0 team outranks 1-1 team with stronger opponents',()=>{
+ const fixtures=[
+  game(1,'Zulu','FCS A',10,0,'fcs'),game(2,'Zulu','FCS B',10,0,'fcs'),
+  game(1,'Alpha','X',10,0),game(2,'Y','Alpha',10,0),
+  game(2,'X','FCS C',10,0,'fcs'),game(3,'X','FCS D',10,0,'fcs'),
+  game(1,'Y','FCS E',10,0,'fcs')
+ ];
+ const result=build(fixtures,2,new Set(['Zulu','Alpha']));
+ const undefeated=result.find(t=>t.name==='Zulu'),split=result.find(t=>t.name==='Alpha');
+ assert.equal(undefeated.wins,2);assert.equal(undefeated.losses,0);
+ assert.equal(split.wins,1);assert.equal(split.losses,1);
+ assert.equal(undefeated.rating,5);assert.equal(split.rating,5);
+ assert.ok(split.opponentWinPct>undefeated.opponentWinPct);
+ assert.ok(split.bestOpponentWins>undefeated.bestOpponentWins);
+ assert.deepEqual(Array.from(result,t=>t.name),['Zulu','Alpha']);
+});
 check('shuffled input has identical final order',()=>{assert.deepEqual(Array.from(build([...games].reverse(),2,new Set(names)),t=>t.name),Array.from(rankings,t=>t.name))});
 const original=harness(games,names,undefined,old);
 check('all pre-existing team ratings are unchanged for identical input',()=>{for(const t of original.ctx.buildPollZeroRankings(games,2,new Set(names))){const updated=rankings.find(r=>r.name===t.name);assert.equal(updated.score,t.score);assert.equal(updated.rating,t.rating);assert.equal(updated.wins,t.wins);assert.equal(updated.losses,t.losses)}});

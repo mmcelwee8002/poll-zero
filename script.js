@@ -271,9 +271,9 @@ const teamList = Object.values(teams).filter(team =>
   // These criteria only break ties; they never change the Poll Zero rating.
   return eligibleTeams.sort((a, b) =>
     b.avgScore - a.avgScore ||
+    b.teamWinPct - a.teamWinPct ||
     b.opponentWinPct - a.opponentWinPct ||
     b.bestOpponentWins - a.bestOpponentWins ||
-    b.teamWinPct - a.teamWinPct ||
     a.name.localeCompare(b.name, "en")
   );
 
