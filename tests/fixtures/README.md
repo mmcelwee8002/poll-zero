@@ -10,7 +10,7 @@ The captured first CFP weeks are 2014 Week 10 and 2025 Week 11. The preceding an
 Run all permanent suites from the repository root:
 
 ```
-node tests/downstream-scoring.cjs
+node tests/cumulative-scoring.cjs
 node tests/calendar-weeks.cjs
 node tests/reliability.cjs
 ```

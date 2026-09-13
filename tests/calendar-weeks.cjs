@@ -88,6 +88,6 @@ const original=harness(games,names,undefined,old);
 check('completed records and full-record strength metrics remain unchanged',()=>{for(const t of original.ctx.buildPollZeroRankings(games,2,new Set(names))){const updated=rankings.find(r=>r.name===t.name);for(const key of ['wins','losses','gamesPlayed','teamWinPct','opponentWinPct','bestOpponentWins'])assert.equal(updated[key],t[key])}});
 const hist=games.filter(g=>g.week<=2).map(g=>({...g,startDate:g.startDate.replace('2026','2025')}));
 const hh=harness(hist,names);await new Promise(r=>setImmediate(r));hh.elements.year.value='2025';hh.elements['week-select'].value='2';let histWeeks=[];const hb=hh.ctx.buildPollZeroRankings;hh.ctx.buildPollZeroRankings=(gs,...rest)=>{histWeeks=gs.map(g=>g.week);return hb(gs,...rest)};await hh.ctx.loadRankings();
-check('2025 Week 2: no remap; downstream scoring is year-independent',()=>{assert.equal(Math.max(...histWeeks),2);const dated2026=build(games.filter(g=>g.week<=2),2,new Set(names));const after=hb(hist,2,new Set(names));for(const t of dated2026)assert.equal(after.find(a=>a.name===t.name).rating,t.rating)});
+check('2025 Week 2: no remap; cumulative scoring is year-independent',()=>{assert.equal(Math.max(...histWeeks),2);const dated2026=build(games.filter(g=>g.week<=2),2,new Set(names));const after=hb(hist,2,new Set(names));for(const t of dated2026)assert.equal(after.find(a=>a.name===t.name).rating,t.rating)});
 console.log('TOTAL',checks,'checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});

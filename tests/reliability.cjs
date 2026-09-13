@@ -2,7 +2,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { game } = require("./downstream-scoring.cjs");
+const { game } = require("./cumulative-scoring.cjs");
 const root = path.resolve(__dirname, "..");
 const source = fs.readFileSync(path.join(root, "script.js"), "utf8");
 const ap = { poll: "AP Top 25", ranks: [{ school: "Virginia", rank: 3 }] };
@@ -202,12 +202,12 @@ async function main() {
     const h=harness();await tick();const names=new Set(h.state.members[2026]);
     const rows=h.ctx.buildPollZeroRankings(h.state.fixtures,2,names);
     const nd=rows.find(t=>t.name==="Notre Dame"),va=rows.find(t=>t.name==="Virginia");
-    assert.equal(nd.rating,0);assert.deepEqual(Array.from(nd.breakdown,b=>b.points),[0,0]);
+    assert.equal(nd.rating,2.5);assert.deepEqual(Array.from(nd.breakdown,b=>b.points),[0,5]);
     assert.equal(va.breakdown.find(b=>b.opponent==="NC State").points,5);
     assert.equal(va.breakdown.find(b=>b.opponent==="Norfolk State").points,5);
     const future=game(7,"Rice","X",20,0,{startDate:"2026-09-19T12:00:00Z"});
     const window=[...h.state.fixtures,future].filter(g=>h.ctx.getPollZeroWeek(g,2026)<=2);
-    assert.equal(h.ctx.buildPollZeroRankings(window,2,names).find(t=>t.name==="Notre Dame").rating,0);
+    assert.equal(h.ctx.buildPollZeroRankings(window,2,names).find(t=>t.name==="Notre Dame").rating,2.5);
   });
   console.log("TOTAL",count,"reliability checks passed");
 }

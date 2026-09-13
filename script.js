@@ -120,8 +120,8 @@ function isNonFBS(classification) {
   return classification && classification.toLowerCase() !== "fbs";
 }
 
-// Scoring requires a completed, decisive result and a usable chronological anchor.
-// Invalid/undated results are excluded rather than ordered by API week or array order.
+// Scoring requires a completed, decisive result and a valid game date.
+// Invalid/undated results are excluded from the selected ranking window.
 function isCompletedScoringGame(game) {
   return game.completed === true &&
     Number.isFinite(game.homePoints) && Number.isFinite(game.awayPoints) &&
@@ -129,22 +129,6 @@ function isCompletedScoringGame(game) {
     typeof game.startDate === "string" && Number.isFinite(Date.parse(game.startDate));
 }
 
-function getDownstreamRecord(games, opponent, matchup) {
-  const matchupStart = Date.parse(matchup.startDate);
-  const record = { wins: 0, losses: 0 };
-  // games is already the validated selected-week window. Strictly later
-  // kickoffs exclude the matchup itself, earlier results, and equal timestamps.
-  games.forEach(game => {
-    if (game.homeTeam !== opponent && game.awayTeam !== opponent) return;
-    if (Date.parse(game.startDate) <= matchupStart) return;
-    const won = game.homeTeam === opponent
-      ? game.homePoints > game.awayPoints
-      : game.awayPoints > game.homePoints;
-    if (won) record.wins += 1;
-    else record.losses += 1;
-  });
-  return record;
-}
 
 function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
   games = games.filter(isCompletedScoringGame);
@@ -216,18 +200,14 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
     away.totalOpponentLosses += homeLosses;
     away.bestOpponentWins = Math.max(away.bestOpponentWins, homeWins);
 
-    // Scoring is downstream-only; strength tiebreakers above remain cumulative.
-    const homeDownstream = homeIsNonFBS ? { wins: 1, losses: 11 }
-      : getDownstreamRecord(games, homeTeam, game);
-    const awayDownstream = awayIsNonFBS ? { wins: 1, losses: 11 }
-      : getDownstreamRecord(games, awayTeam, game);
+
 
     if (homePoints > awayPoints) {
-      // A win gains value only from this opponent's subsequent wins.
-      const homeContribution = awayDownstream.wins * 5;
+      // A win gains value only from this opponent's cumulative wins.
+      const homeContribution = awayWins * 5;
 
-      // Loser loses -5 for each subsequent loss the winning team has.
-      const awayContribution = homeDownstream.losses * -5;
+      // Loser loses -5 for each cumulative loss the winning team has.
+      const awayContribution = homeLosses * -5;
 
       home.score += homeContribution;
       away.score += awayContribution;
@@ -248,11 +228,11 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
 
     } else {
       // Away team won.
-      // Winner earns +5 for each subsequent win the opponent has.
-      const awayContribution = homeDownstream.wins * 5;
+      // Winner earns +5 for each cumulative win the opponent has.
+      const awayContribution = homeWins * 5;
 
-      // Loser loses -5 for each subsequent loss the winning team has.
-      const homeContribution = awayDownstream.losses * -5;
+      // Loser loses -5 for each cumulative loss the winning team has.
+      const homeContribution = awayLosses * -5;
 
       away.score += awayContribution;
       home.score += homeContribution;
