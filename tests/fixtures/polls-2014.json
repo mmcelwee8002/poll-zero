@@ -1,0 +1,548 @@
+[
+  {
+    "season": 2014,
+    "seasonType": "regular",
+    "week": 10,
+    "polls": [
+      {
+        "poll": "AP Top 25",
+        "ranks": [
+          {
+            "school": "East Carolina",
+            "rank": 21
+          },
+          {
+            "school": "Georgia",
+            "rank": 9
+          },
+          {
+            "school": "Kansas State",
+            "rank": 11
+          },
+          {
+            "school": "Baylor",
+            "rank": 12
+          },
+          {
+            "school": "TCU",
+            "rank": 10
+          },
+          {
+            "school": "West Virginia",
+            "rank": 20
+          },
+          {
+            "school": "Oregon",
+            "rank": 5
+          },
+          {
+            "school": "Auburn",
+            "rank": 4
+          },
+          {
+            "school": "LSU",
+            "rank": 16
+          },
+          {
+            "school": "UCLA",
+            "rank": 25
+          },
+          {
+            "school": "Utah",
+            "rank": 18
+          },
+          {
+            "school": "Arizona State",
+            "rank": 15
+          },
+          {
+            "school": "Arizona",
+            "rank": 14
+          },
+          {
+            "school": "Alabama",
+            "rank": 3
+          },
+          {
+            "school": "Ole Miss",
+            "rank": 7
+          },
+          {
+            "school": "Mississippi State",
+            "rank": 1
+          },
+          {
+            "school": "Marshall",
+            "rank": 23
+          },
+          {
+            "school": "Ohio State",
+            "rank": 13
+          },
+          {
+            "school": "Michigan State",
+            "rank": 8
+          },
+          {
+            "school": "Nebraska",
+            "rank": 17
+          },
+          {
+            "school": "Oklahoma",
+            "rank": 19
+          },
+          {
+            "school": "Notre Dame",
+            "rank": 6
+          },
+          {
+            "school": "Florida State",
+            "rank": 2
+          },
+          {
+            "school": "Clemson",
+            "rank": 22
+          },
+          {
+            "school": "Duke",
+            "rank": 24
+          }
+        ]
+      },
+      {
+        "poll": "Playoff Committee Rankings",
+        "ranks": [
+          {
+            "school": "East Carolina",
+            "rank": 23
+          },
+          {
+            "school": "Georgia",
+            "rank": 11
+          },
+          {
+            "school": "Kansas State",
+            "rank": 9
+          },
+          {
+            "school": "Baylor",
+            "rank": 13
+          },
+          {
+            "school": "TCU",
+            "rank": 7
+          },
+          {
+            "school": "West Virginia",
+            "rank": 20
+          },
+          {
+            "school": "Oregon",
+            "rank": 5
+          },
+          {
+            "school": "Auburn",
+            "rank": 3
+          },
+          {
+            "school": "LSU",
+            "rank": 19
+          },
+          {
+            "school": "UCLA",
+            "rank": 22
+          },
+          {
+            "school": "Utah",
+            "rank": 17
+          },
+          {
+            "school": "Arizona State",
+            "rank": 14
+          },
+          {
+            "school": "Arizona",
+            "rank": 12
+          },
+          {
+            "school": "Alabama",
+            "rank": 6
+          },
+          {
+            "school": "Ole Miss",
+            "rank": 4
+          },
+          {
+            "school": "Mississippi State",
+            "rank": 1
+          },
+          {
+            "school": "Ohio State",
+            "rank": 16
+          },
+          {
+            "school": "Michigan State",
+            "rank": 8
+          },
+          {
+            "school": "Nebraska",
+            "rank": 15
+          },
+          {
+            "school": "Oklahoma",
+            "rank": 18
+          },
+          {
+            "school": "Notre Dame",
+            "rank": 10
+          },
+          {
+            "school": "Florida State",
+            "rank": 2
+          },
+          {
+            "school": "Clemson",
+            "rank": 21
+          },
+          {
+            "school": "Duke",
+            "rank": 24
+          },
+          {
+            "school": "Louisville",
+            "rank": 25
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "season": 2014,
+    "seasonType": "regular",
+    "week": 9,
+    "polls": [
+      {
+        "poll": "AP Top 25",
+        "ranks": [
+          {
+            "school": "East Carolina",
+            "rank": 18
+          },
+          {
+            "school": "Georgia",
+            "rank": 9
+          },
+          {
+            "school": "Kansas State",
+            "rank": 11
+          },
+          {
+            "school": "Baylor",
+            "rank": 12
+          },
+          {
+            "school": "TCU",
+            "rank": 10
+          },
+          {
+            "school": "West Virginia",
+            "rank": 22
+          },
+          {
+            "school": "Oregon",
+            "rank": 6
+          },
+          {
+            "school": "USC",
+            "rank": 20
+          },
+          {
+            "school": "Auburn",
+            "rank": 5
+          },
+          {
+            "school": "LSU",
+            "rank": 24
+          },
+          {
+            "school": "UCLA",
+            "rank": 25
+          },
+          {
+            "school": "Utah",
+            "rank": 19
+          },
+          {
+            "school": "Arizona State",
+            "rank": 14
+          },
+          {
+            "school": "Arizona",
+            "rank": 15
+          },
+          {
+            "school": "Alabama",
+            "rank": 4
+          },
+          {
+            "school": "Ole Miss",
+            "rank": 3
+          },
+          {
+            "school": "Mississippi State",
+            "rank": 1
+          },
+          {
+            "school": "Marshall",
+            "rank": 23
+          },
+          {
+            "school": "Ohio State",
+            "rank": 13
+          },
+          {
+            "school": "Michigan State",
+            "rank": 8
+          },
+          {
+            "school": "Nebraska",
+            "rank": 16
+          },
+          {
+            "school": "Oklahoma",
+            "rank": 17
+          },
+          {
+            "school": "Notre Dame",
+            "rank": 7
+          },
+          {
+            "school": "Florida State",
+            "rank": 2
+          },
+          {
+            "school": "Clemson",
+            "rank": 21
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "season": 2014,
+    "seasonType": "regular",
+    "week": 11,
+    "polls": [
+      {
+        "poll": "AP Top 25",
+        "ranks": [
+          {
+            "school": "Georgia",
+            "rank": 17
+          },
+          {
+            "school": "Kansas State",
+            "rank": 9
+          },
+          {
+            "school": "Baylor",
+            "rank": 10
+          },
+          {
+            "school": "TCU",
+            "rank": 6
+          },
+          {
+            "school": "West Virginia",
+            "rank": 24
+          },
+          {
+            "school": "Oregon",
+            "rank": 5
+          },
+          {
+            "school": "Auburn",
+            "rank": 3
+          },
+          {
+            "school": "LSU",
+            "rank": 14
+          },
+          {
+            "school": "UCLA",
+            "rank": 18
+          },
+          {
+            "school": "Utah",
+            "rank": 20
+          },
+          {
+            "school": "Arizona State",
+            "rank": 11
+          },
+          {
+            "school": "Arizona",
+            "rank": 21
+          },
+          {
+            "school": "Alabama",
+            "rank": 4
+          },
+          {
+            "school": "Ole Miss",
+            "rank": 12
+          },
+          {
+            "school": "Mississippi State",
+            "rank": 1
+          },
+          {
+            "school": "Marshall",
+            "rank": 23
+          },
+          {
+            "school": "Ohio State",
+            "rank": 13
+          },
+          {
+            "school": "Michigan State",
+            "rank": 7
+          },
+          {
+            "school": "Wisconsin",
+            "rank": 25
+          },
+          {
+            "school": "Nebraska",
+            "rank": 15
+          },
+          {
+            "school": "Oklahoma",
+            "rank": 16
+          },
+          {
+            "school": "Notre Dame",
+            "rank": 8
+          },
+          {
+            "school": "Florida State",
+            "rank": 2
+          },
+          {
+            "school": "Clemson",
+            "rank": 19
+          },
+          {
+            "school": "Duke",
+            "rank": 22
+          }
+        ]
+      },
+      {
+        "poll": "Playoff Committee Rankings",
+        "ranks": [
+          {
+            "school": "Georgia",
+            "rank": 20
+          },
+          {
+            "school": "Kansas State",
+            "rank": 7
+          },
+          {
+            "school": "Baylor",
+            "rank": 12
+          },
+          {
+            "school": "TCU",
+            "rank": 6
+          },
+          {
+            "school": "West Virginia",
+            "rank": 23
+          },
+          {
+            "school": "Oregon",
+            "rank": 4
+          },
+          {
+            "school": "Auburn",
+            "rank": 3
+          },
+          {
+            "school": "LSU",
+            "rank": 16
+          },
+          {
+            "school": "UCLA",
+            "rank": 18
+          },
+          {
+            "school": "Utah",
+            "rank": 17
+          },
+          {
+            "school": "Arizona State",
+            "rank": 9
+          },
+          {
+            "school": "Arizona",
+            "rank": 19
+          },
+          {
+            "school": "Alabama",
+            "rank": 5
+          },
+          {
+            "school": "Ole Miss",
+            "rank": 11
+          },
+          {
+            "school": "Mississippi State",
+            "rank": 1
+          },
+          {
+            "school": "Ohio State",
+            "rank": 14
+          },
+          {
+            "school": "Michigan State",
+            "rank": 8
+          },
+          {
+            "school": "Wisconsin",
+            "rank": 25
+          },
+          {
+            "school": "Nebraska",
+            "rank": 13
+          },
+          {
+            "school": "Oklahoma",
+            "rank": 15
+          },
+          {
+            "school": "Notre Dame",
+            "rank": 10
+          },
+          {
+            "school": "Florida State",
+            "rank": 2
+          },
+          {
+            "school": "Clemson",
+            "rank": 21
+          },
+          {
+            "school": "Georgia Tech",
+            "rank": 24
+          },
+          {
+            "school": "Duke",
+            "rank": 22
+          }
+        ]
+      }
+    ]
+  }
+]

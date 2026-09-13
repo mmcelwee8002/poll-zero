@@ -16,7 +16,7 @@ function harness(games,names,now='2026-09-12T12:00:00Z',text=source){
  const state={games,names,official:[{polls:[{poll:'AP Top 25',ranks:Array.from({length:25},(_,i)=>({school:'AP '+(i+1),rank:i+1}))}]}],failAP:false};
  class Clock extends Date{constructor(...args){super(...(args.length?args:[now]))}static now(){return new Date(now).getTime()}}
  const ctx={Date:Clock,console:{log(){},error(){}},document:{getElementById(id){return elements[id]??=element()},createElement(tag){return {...element(),tag}},addEventListener(){}},window:{matchMedia:()=>({matches:false}),addEventListener(){}},
- fetch:async url=>({json:async()=>{if(url.startsWith('/api/games'))return state.games;if(url==='/api/teams')return state.names.map(school=>({school}));if(state.failAP)throw Error('AP unavailable');return state.official}})};
+ fetch:async url=>({ok:true,json:async()=>{if(url.startsWith('/api/games'))return state.games;if(url.startsWith('/api/teams'))return state.names.map(school=>({school}));if(state.failAP)throw Error('AP unavailable');return state.official}})};
  vm.createContext(ctx);vm.runInContext(text,ctx);
  return {ctx,state,elements};
 }

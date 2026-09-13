@@ -1,0 +1,410 @@
+[
+  {
+    "school": "Air Force"
+  },
+  {
+    "school": "Akron"
+  },
+  {
+    "school": "Alabama"
+  },
+  {
+    "school": "App State"
+  },
+  {
+    "school": "Arizona"
+  },
+  {
+    "school": "Arizona State"
+  },
+  {
+    "school": "Arkansas"
+  },
+  {
+    "school": "Arkansas State"
+  },
+  {
+    "school": "Army"
+  },
+  {
+    "school": "Auburn"
+  },
+  {
+    "school": "Ball State"
+  },
+  {
+    "school": "Baylor"
+  },
+  {
+    "school": "Boise State"
+  },
+  {
+    "school": "Boston College"
+  },
+  {
+    "school": "Bowling Green"
+  },
+  {
+    "school": "Buffalo"
+  },
+  {
+    "school": "BYU"
+  },
+  {
+    "school": "California"
+  },
+  {
+    "school": "Central Michigan"
+  },
+  {
+    "school": "Charlotte"
+  },
+  {
+    "school": "Cincinnati"
+  },
+  {
+    "school": "Clemson"
+  },
+  {
+    "school": "Coastal Carolina"
+  },
+  {
+    "school": "Colorado"
+  },
+  {
+    "school": "Colorado State"
+  },
+  {
+    "school": "Delaware"
+  },
+  {
+    "school": "Duke"
+  },
+  {
+    "school": "East Carolina"
+  },
+  {
+    "school": "Eastern Michigan"
+  },
+  {
+    "school": "Florida"
+  },
+  {
+    "school": "Florida Atlantic"
+  },
+  {
+    "school": "Florida International"
+  },
+  {
+    "school": "Florida State"
+  },
+  {
+    "school": "Fresno State"
+  },
+  {
+    "school": "Georgia"
+  },
+  {
+    "school": "Georgia Southern"
+  },
+  {
+    "school": "Georgia State"
+  },
+  {
+    "school": "Georgia Tech"
+  },
+  {
+    "school": "Hawai'i"
+  },
+  {
+    "school": "Houston"
+  },
+  {
+    "school": "Illinois"
+  },
+  {
+    "school": "Indiana"
+  },
+  {
+    "school": "Iowa"
+  },
+  {
+    "school": "Iowa State"
+  },
+  {
+    "school": "Jacksonville State"
+  },
+  {
+    "school": "James Madison"
+  },
+  {
+    "school": "Kansas"
+  },
+  {
+    "school": "Kansas State"
+  },
+  {
+    "school": "Kennesaw State"
+  },
+  {
+    "school": "Kent State"
+  },
+  {
+    "school": "Kentucky"
+  },
+  {
+    "school": "Liberty"
+  },
+  {
+    "school": "Louisiana"
+  },
+  {
+    "school": "Louisiana Tech"
+  },
+  {
+    "school": "Louisville"
+  },
+  {
+    "school": "LSU"
+  },
+  {
+    "school": "Marshall"
+  },
+  {
+    "school": "Maryland"
+  },
+  {
+    "school": "Massachusetts"
+  },
+  {
+    "school": "Memphis"
+  },
+  {
+    "school": "Miami"
+  },
+  {
+    "school": "Miami (OH)"
+  },
+  {
+    "school": "Michigan"
+  },
+  {
+    "school": "Michigan State"
+  },
+  {
+    "school": "Middle Tennessee"
+  },
+  {
+    "school": "Minnesota"
+  },
+  {
+    "school": "Mississippi State"
+  },
+  {
+    "school": "Missouri"
+  },
+  {
+    "school": "Missouri State"
+  },
+  {
+    "school": "Navy"
+  },
+  {
+    "school": "NC State"
+  },
+  {
+    "school": "Nebraska"
+  },
+  {
+    "school": "Nevada"
+  },
+  {
+    "school": "New Mexico"
+  },
+  {
+    "school": "New Mexico State"
+  },
+  {
+    "school": "North Carolina"
+  },
+  {
+    "school": "Northern Illinois"
+  },
+  {
+    "school": "North Texas"
+  },
+  {
+    "school": "Northwestern"
+  },
+  {
+    "school": "Notre Dame"
+  },
+  {
+    "school": "Ohio"
+  },
+  {
+    "school": "Ohio State"
+  },
+  {
+    "school": "Oklahoma"
+  },
+  {
+    "school": "Oklahoma State"
+  },
+  {
+    "school": "Old Dominion"
+  },
+  {
+    "school": "Ole Miss"
+  },
+  {
+    "school": "Oregon"
+  },
+  {
+    "school": "Oregon State"
+  },
+  {
+    "school": "Penn State"
+  },
+  {
+    "school": "Pittsburgh"
+  },
+  {
+    "school": "Purdue"
+  },
+  {
+    "school": "Rice"
+  },
+  {
+    "school": "Rutgers"
+  },
+  {
+    "school": "Sam Houston"
+  },
+  {
+    "school": "San Diego State"
+  },
+  {
+    "school": "San José State"
+  },
+  {
+    "school": "SMU"
+  },
+  {
+    "school": "South Alabama"
+  },
+  {
+    "school": "South Carolina"
+  },
+  {
+    "school": "Southern Miss"
+  },
+  {
+    "school": "South Florida"
+  },
+  {
+    "school": "Stanford"
+  },
+  {
+    "school": "Syracuse"
+  },
+  {
+    "school": "TCU"
+  },
+  {
+    "school": "Temple"
+  },
+  {
+    "school": "Tennessee"
+  },
+  {
+    "school": "Texas"
+  },
+  {
+    "school": "Texas A&M"
+  },
+  {
+    "school": "Texas State"
+  },
+  {
+    "school": "Texas Tech"
+  },
+  {
+    "school": "Toledo"
+  },
+  {
+    "school": "Troy"
+  },
+  {
+    "school": "Tulane"
+  },
+  {
+    "school": "Tulsa"
+  },
+  {
+    "school": "UAB"
+  },
+  {
+    "school": "UCF"
+  },
+  {
+    "school": "UCLA"
+  },
+  {
+    "school": "UConn"
+  },
+  {
+    "school": "UL Monroe"
+  },
+  {
+    "school": "UNLV"
+  },
+  {
+    "school": "USC"
+  },
+  {
+    "school": "Utah"
+  },
+  {
+    "school": "Utah State"
+  },
+  {
+    "school": "UTEP"
+  },
+  {
+    "school": "UTSA"
+  },
+  {
+    "school": "Vanderbilt"
+  },
+  {
+    "school": "Virginia"
+  },
+  {
+    "school": "Virginia Tech"
+  },
+  {
+    "school": "Wake Forest"
+  },
+  {
+    "school": "Washington"
+  },
+  {
+    "school": "Washington State"
+  },
+  {
+    "school": "Western Kentucky"
+  },
+  {
+    "school": "Western Michigan"
+  },
+  {
+    "school": "West Virginia"
+  },
+  {
+    "school": "Wisconsin"
+  },
+  {
+    "school": "Wyoming"
+  }
+]

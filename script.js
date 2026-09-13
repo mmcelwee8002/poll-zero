@@ -106,9 +106,10 @@ async function fetchGames(year) {
 }
 
 // Gets AP / CFP rankings from our Vercel backend.
-// Weeks 1-10 will use AP. Weeks 11+ will use CFP later.
+// Comparison selection uses available CFP data, otherwise AP.
 async function fetchOfficialRankings(year, week) {
   const response = await fetch(`/api/rankings?year=${year}&week=${week}`);
+  if (!response.ok) throw new Error("Official rankings unavailable");
   const data = await response.json();
 
   return data;
@@ -341,19 +342,36 @@ async function fetchTeamLogos() {
 // Get the official list of FBS teams.
 // This is used to prevent FCS teams from appearing in Poll Zero rankings,
 // even if an individual game is incorrectly labeled by the API.
-async function fetchFBSTeamNames() {
-  const response = await fetch("/api/teams");
+async function fetchFBSTeamNames(year) {
+  const response = await fetch(`/api/teams?year=${encodeURIComponent(year)}`);
+  if (!response.ok) throw new Error("FBS membership unavailable");
   const data = await response.json();
+  if (!Array.isArray(data)) throw new Error("Invalid FBS membership response");
 
   return new Set(data.map(team => team.school));
 }
 
-// Use AP rankings before CFP rankings exist.
-// Starting Week 11, compare Poll Zero against CFP.
-function getPollNameForWeek(selectedWeek) {
-  return Number(selectedWeek) >= 11
-    ? "Playoff Committee Rankings"
-    : "AP Top 25";
+// Poll availability, not a fixed week number, determines the comparison.
+// Week 1 is always AP-only. Invalid/empty polls are treated as unavailable.
+function getOfficialPoll(officialRankings, selectedWeek) {
+  const polls = Array.isArray(officialRankings) && Array.isArray(officialRankings[0]?.polls)
+    ? officialRankings[0].polls : [];
+  const preferred = Number(selectedWeek) === 1 ? ["AP Top 25"]
+    : ["Playoff Committee Rankings", "AP Top 25"];
+  for (const name of preferred) {
+    for (const poll of polls) {
+      if (poll?.poll !== name || !Array.isArray(poll.ranks)) continue;
+      const ranks = poll.ranks.filter(item => item &&
+        typeof item.school === "string" && item.school.trim() &&
+        Number.isInteger(item.rank) && item.rank > 0);
+      if (ranks.length) return { poll: name, ranks };
+    }
+  }
+  return null;
+}
+
+function getPollNameForWeek(selectedWeek, officialRankings) {
+  return getOfficialPoll(officialRankings, selectedWeek)?.poll ?? null;
 }
 
 // Builds a quick lookup table:
@@ -362,16 +380,11 @@ function buildOfficialRankMap(officialRankings, selectedWeek) {
   const officialRankMap = {};
 
   // No official ranking comparison for "All Weeks"
-  if (!officialRankings || officialRankings.length === 0) {
+  if (selectedWeek === "all") {
     return officialRankMap;
   }
 
-  const pollName = getPollNameForWeek(selectedWeek);
-
-  // CollegeFootballData returns rankings inside officialRankings[0].polls
-  const polls = officialRankings[0].polls;
-
-  const selectedPoll = polls.find(poll => poll.poll === pollName);
+  const selectedPoll = getOfficialPoll(officialRankings, selectedWeek);
 
   // If the selected poll does not exist for that week, return empty map
   if (!selectedPoll) {
@@ -386,6 +399,8 @@ function buildOfficialRankMap(officialRankings, selectedWeek) {
 }
 
 
+let latestRankingLoadId = 0;
+
 async function loadRankings() {
 
 
@@ -393,13 +408,21 @@ async function loadRankings() {
 
   const selectedYear = document.getElementById("year").value;
   const selectedWeek = document.getElementById("week-select").value;
+  const loadId = ++latestRankingLoadId;
+  const isCurrentLoad = () => loadId === latestRankingLoadId &&
+    selectedYear === document.getElementById("year").value &&
+    selectedWeek === document.getElementById("week-select").value;
 
+  try {
+  // Clear the previous selection while loading; stale requests cannot restore it.
+  document.getElementById("rankings").innerHTML = "";
   document.getElementById("page-title").textContent =
     `🏈 Poll Zero Rankings — ${selectedYear} — ${selectedWeek === "all" ? "All Weeks" : `Week ${selectedWeek}`}`;
 
   const weekParam = selectedWeek === "all" ? "" : selectedWeek;
 
   let games = await fetchGames(selectedYear);
+  if (!isCurrentLoad()) return;
 
   const availableWeek = updateWeekAvailability(games, selectedYear);
 
@@ -421,7 +444,8 @@ async function loadRankings() {
 
   // Load the official FBS team list.
 // This determines which teams are eligible to appear in Poll Zero.
-const fbsTeamNames = await fetchFBSTeamNames();
+const fbsTeamNames = await fetchFBSTeamNames(selectedYear);
+  if (!isCurrentLoad()) return;
 
   // Get AP / CFP rankings for the selected week.
   // This lets us compare Poll Zero against human / committee rankings.
@@ -432,10 +456,11 @@ const fbsTeamNames = await fetchFBSTeamNames();
     try {
       officialRankings = await fetchOfficialRankings(selectedYear, selectedWeek);
     } catch (error) {
-      // A failed AP request follows the same Week 1 unavailable path as no poll.
-      if (Number(selectedWeek) !== 1) throw error;
+      // Comparison data is optional. Week 1 uses the AP-unavailable branch below.
+      officialRankings = [];
     }
   }
+  if (!isCurrentLoad()) return;
 
   // Use Poll Zero week numbering when filtering games.
   // In 2026, kickoff calendar dates determine the Poll Zero week.
@@ -448,9 +473,7 @@ const fbsTeamNames = await fetchFBSTeamNames();
   // Week 1 uses AP Top 25 only.
   // Poll Zero begins as a preview in Week 2.
   if (Number(selectedWeek) === 1) {
-    const apPoll = officialRankings?.[0]?.polls?.find(
-      poll => poll.poll === "AP Top 25"
-    );
+    const apPoll = getOfficialPoll(officialRankings, selectedWeek);
 
     if (apPoll && apPoll.ranks?.length > 0) {
       const list = document.getElementById("rankings");
@@ -511,6 +534,7 @@ const fbsTeamNames = await fetchFBSTeamNames();
   fbsTeamNames
 );
   const logoMap = await fetchTeamLogos();
+  if (!isCurrentLoad()) return;
 
   
 
@@ -647,7 +671,7 @@ if (Number(selectedWeek) === 2) {
   </div>
 
 <div class="record-text">
-  (${team.wins}-${team.losses}) ${officialRankMap[team.name] ? `| ${getPollNameForWeek(selectedWeek) === "AP Top 25" ? "AP" : "CFP"} #${officialRankMap[team.name]}` : "| NR"}
+  (${team.wins}-${team.losses}) ${officialRankMap[team.name] ? `| ${getPollNameForWeek(selectedWeek, officialRankings) === "AP Top 25" ? "AP" : "CFP"} #${officialRankMap[team.name]}` : "| NR"}
 </div>
 `;
 
@@ -655,6 +679,13 @@ if (Number(selectedWeek) === 2) {
 
     list.appendChild(li);
   });
+  } catch (error) {
+    // Failed obsolete requests must not replace newer results or messages.
+    if (!isCurrentLoad()) return;
+    document.getElementById("rankings").innerHTML = `
+      <li class="no-rankings-message">Unable to load rankings. Please try again.</li>
+    `;
+  }
 }
 
 const supportsHover = window.matchMedia(
@@ -791,9 +822,10 @@ Array.from(weekSelect.options).forEach(option => {
 });
 const initialScheduleYear = yearSelect.value;
 fetchGames(initialScheduleYear).then(games => {
-  if (yearSelect.value === initialScheduleYear) {
+  if (latestRankingLoadId === 0 && yearSelect.value === initialScheduleYear) {
     updateWeekAvailability(games, initialScheduleYear);
   }
 }).catch(error => {
+  if (latestRankingLoadId !== 0 || yearSelect.value !== initialScheduleYear) return;
   console.error("Unable to determine available Poll Zero weeks:", error);
 });
