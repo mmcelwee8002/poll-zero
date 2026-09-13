@@ -56,6 +56,28 @@ function getPollZeroWeek(gameWeek, selectedYear) {
   return gameWeek;
 }
 
+function getAvailablePollZeroWeek(games, selectedYear, now = Date.now()) {
+  // A week becomes available when a game is completed or its known scheduled
+  // kickoff has arrived (TBD times cannot establish a start). Use the latest
+  // such API week, mapped for the selected season.
+  // With no started games, -1 keeps every numbered week unavailable.
+  return games.reduce((availableWeek, game) => {
+    const kickoff = Date.parse(game.startDate);
+    if (game.completed === true || (!game.startTimeTBD && Number.isFinite(kickoff) && kickoff <= now)) {
+      return Math.max(availableWeek, getPollZeroWeek(game.week, selectedYear));
+    }
+    return availableWeek;
+  }, -1);
+}
+
+function updateWeekAvailability(games, selectedYear) {
+  const availableWeek = getAvailablePollZeroWeek(games, selectedYear);
+  Array.from(document.getElementById("week-select").options).forEach(option => {
+    option.disabled = option.value !== "all" && Number(option.value) > availableWeek;
+  });
+  return availableWeek;
+}
+
 async function fetchGames(year) {
   const response = await fetch(`/api/games?year=${year}`);
 
@@ -68,8 +90,6 @@ async function fetchGames(year) {
 async function fetchOfficialRankings(year, week) {
   const response = await fetch(`/api/rankings?year=${year}&week=${week}`);
   const data = await response.json();
-
-  console.log("Official rankings:", data);
 
   return data;
 }
@@ -101,11 +121,11 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
     // Track score contributors so users can see why a team has its rating.
 
     if (!teams[homeTeam]) {
-      teams[homeTeam] = { name: homeTeam, wins: 0, losses: 0, score: 0, breakdown: [] };
+      teams[homeTeam] = { name: homeTeam, wins: 0, losses: 0, score: 0, breakdown: [], totalOpponentWins: 0, totalOpponentLosses: 0, bestOpponentWins: 0 };
     }
 
     if (!teams[awayTeam]) {
-      teams[awayTeam] = { name: awayTeam, wins: 0, losses: 0, score: 0, breakdown: [] };
+      teams[awayTeam] = { name: awayTeam, wins: 0, losses: 0, score: 0, breakdown: [], totalOpponentWins: 0, totalOpponentLosses: 0, bestOpponentWins: 0 };
     }
 
     if (homePoints > awayPoints) {
@@ -139,6 +159,14 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
     const awayWins = awayIsNonFBS ? 1 : away.wins;
     const awayLosses = awayIsNonFBS ? 11 : away.losses;
 
+    // Tiebreak strength uses each played opponent's record in this same window,
+    // including the scoring model's synthetic 1-11 record for FCS opponents.
+    home.totalOpponentWins += awayWins;
+    home.totalOpponentLosses += awayLosses;
+    home.bestOpponentWins = Math.max(home.bestOpponentWins, awayWins);
+    away.totalOpponentWins += homeWins;
+    away.totalOpponentLosses += homeLosses;
+    away.bestOpponentWins = Math.max(away.bestOpponentWins, homeWins);
 
     if (homePoints > awayPoints) {
       // Home team won.
@@ -194,8 +222,7 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
 // Only official FBS teams can appear in Poll Zero rankings.
 // FCS teams still participate in the calculations as opponents.
 const teamList = Object.values(teams).filter(team =>
-  fbsTeamNames.has(team.name) &&
-  !excludedFromPollZeroRankings.has(team.name)
+  fbsTeamNames.has(team.name)
 );
 
 
@@ -205,6 +232,9 @@ const teamList = Object.values(teams).filter(team =>
     const gamesPlayed = team.wins + team.losses;
     team.gamesPlayed = gamesPlayed;
     team.avgScore = gamesPlayed > 0 ? team.score / gamesPlayed : 0;
+    const opponentGames = team.totalOpponentWins + team.totalOpponentLosses;
+    team.opponentWinPct = opponentGames > 0 ? team.totalOpponentWins / opponentGames : 0;
+    team.teamWinPct = gamesPlayed > 0 ? team.wins / gamesPlayed : 0;
   });
 
   // sort by average instead of total
@@ -218,7 +248,14 @@ const teamList = Object.values(teams).filter(team =>
     team.rating = team.avgScore;
   });
 
-  return eligibleTeams.sort((a, b) => b.avgScore - a.avgScore);
+  // These criteria only break ties; they never change the Poll Zero rating.
+  return eligibleTeams.sort((a, b) =>
+    b.avgScore - a.avgScore ||
+    b.opponentWinPct - a.opponentWinPct ||
+    b.bestOpponentWins - a.bestOpponentWins ||
+    b.teamWinPct - a.teamWinPct ||
+    a.name.localeCompare(b.name, "en")
+  );
 
 }
 function getRankMap(rankings) {
@@ -312,28 +349,27 @@ async function loadRankings() {
 
   let games = await fetchGames(selectedYear);
 
+  const availableWeek = updateWeekAvailability(games, selectedYear);
+
+  // Guard stale/programmatic selections as well as disabling future options.
+  if (selectedWeek !== "all" && Number(selectedWeek) > availableWeek) {
+    document.getElementById("rankings").innerHTML = `
+      <li class="no-rankings-message">Week ${selectedWeek} has not started yet.</li>
+    `;
+    return;
+  }
+
+  // Week 0 intentionally has no Poll Zero ranking, even when games are complete.
+  if (Number(selectedWeek) === 0) {
+    document.getElementById("rankings").innerHTML = `
+      <li class="no-rankings-message">No Poll Zero rankings for Week 0. Week 1 uses the AP Top 25.</li>
+    `;
+    return;
+  }
+
   // Load the official FBS team list.
 // This determines which teams are eligible to appear in Poll Zero.
 const fbsTeamNames = await fetchFBSTeamNames();
-
-// TEMP: verify whether the teams endpoint thinks NDSU is FBS
-console.log(
-  "NDSU in FBS team list:",
-  fbsTeamNames.has("North Dakota State")
-);
-
-
-  // TEMP: Check how North Dakota State is classified by the API.
-console.log(
-  "NDSU games:",
-  games.filter(game =>
-    game.homeTeam === "North Dakota State" ||
-    game.awayTeam === "North Dakota State"
-  )
-);
-
-  // TEMP: Check how the API labels 2026 game weeks
-  console.log("Games from API:", games);
 
   // Get AP / CFP rankings for the selected week.
   // This lets us compare Poll Zero against human / committee rankings.
@@ -341,10 +377,12 @@ console.log(
 
   // Load the official AP / CFP rankings for the selected week.
   if (selectedWeek !== "all") {
-    officialRankings = await fetchOfficialRankings(
-      selectedYear,
-      selectedWeek
-    );
+    try {
+      officialRankings = await fetchOfficialRankings(selectedYear, selectedWeek);
+    } catch (error) {
+      // A failed AP request follows the same Week 1 unavailable path as no poll.
+      if (Number(selectedWeek) !== 1) throw error;
+    }
   }
 
   // Use Poll Zero week numbering when filtering games.
@@ -355,25 +393,14 @@ console.log(
     );
   }
 
-  // Build lookup table:
-  // Indiana -> 8
-  // Ohio State -> 2
-  // etc.
-  const officialRankMap = buildOfficialRankMap(
-    officialRankings,
-    selectedWeek
-  );
-
-  console.log("Official rank map:", officialRankMap);
-
   // Week 1 uses AP Top 25 only.
   // Poll Zero begins as a preview in Week 2.
   if (Number(selectedWeek) === 1) {
-    const apPoll = officialRankings[0]?.polls?.find(
+    const apPoll = officialRankings?.[0]?.polls?.find(
       poll => poll.poll === "AP Top 25"
     );
 
-    if (apPoll) {
+    if (apPoll && apPoll.ranks?.length > 0) {
       const list = document.getElementById("rankings");
 
       list.innerHTML = "";
@@ -395,12 +422,21 @@ console.log(
 
       return;
     }
+
+    // Missing AP data must not fall through to a Poll Zero ranking in Week 1.
+    document.getElementById("rankings").innerHTML = `
+      <li class="no-rankings-message">AP Top 25 rankings are unavailable for this week.</li>
+    `;
+    return;
   }
 
+  const officialRankMap = buildOfficialRankMap(officialRankings, selectedWeek);
 
   let previousRankMap = {};
 
-  if (selectedWeek !== "all" && Number(selectedWeek) > 0) {
+  // Week 2 is the first public Poll Zero preview, so movement begins in Week 3.
+  const showMovement = selectedWeek !== "all" && Number(selectedWeek) >= 3;
+  if (showMovement) {
     const prevWeek = Number(selectedWeek) - 1;
 
     const prevGames = games.filter(
@@ -413,12 +449,10 @@ console.log(
   fbsTeamNames
 );
 
-    previousRankMap = getRankMap(prevRankings);
+    // Compare against the previous displayed Top 25; other teams are NEW.
+    previousRankMap = getRankMap(prevRankings.slice(0, 25));
   }
 
-  if (selectedWeek !== "all") {
-    games = games.filter(game => game.week <= Number(selectedWeek));
-  }
  const rankings = buildPollZeroRankings(
   games,
   selectedWeek,
@@ -465,14 +499,14 @@ if (Number(selectedWeek) === 2) {
 
     let movement = "";
 
-    if (previousRank !== undefined) {
+    if (showMovement && previousRank !== undefined) {
       const change = previousRank - currentRank;
 
       if (change > 0) movement = `<span class="up">↑ ${change}</span>`;
       if (change < 0) movement = `<span class="down">↓ ${Math.abs(change)}</span>`;
       if (change === 0) movement = `<span class="same">—</span>`;
 
-    } else if (selectedWeek !== "all") {
+    } else if (showMovement) {
       movement = `<span class="new">NEW</span>`;
     }
 
@@ -570,12 +604,6 @@ if (Number(selectedWeek) === 2) {
     list.appendChild(li);
   });
 }
-
-// Teams that should participate in game calculations
-// but should never appear in Poll Zero FBS rankings.
-const excludedFromPollZeroRankings = new Set([
-  "North Dakota State"
-]);
 
 const supportsHover = window.matchMedia(
   "(hover: hover) and (pointer: fine)"
@@ -703,3 +731,17 @@ weekSelect.addEventListener("change", () => {
 });
 
 window.loadRankings = loadRankings;
+
+// Disable future choices on first visit, before the user loads a ranking.
+// Keep numbered weeks unavailable until the schedule establishes availability.
+Array.from(weekSelect.options).forEach(option => {
+  option.disabled = option.value !== "all";
+});
+const initialScheduleYear = yearSelect.value;
+fetchGames(initialScheduleYear).then(games => {
+  if (yearSelect.value === initialScheduleYear) {
+    updateWeekAvailability(games, initialScheduleYear);
+  }
+}).catch(error => {
+  console.error("Unable to determine available Poll Zero weeks:", error);
+});
