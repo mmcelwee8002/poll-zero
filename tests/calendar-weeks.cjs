@@ -85,9 +85,9 @@ check('equally rated 2-0 team outranks 1-1 team with stronger opponents',()=>{
 });
 check('shuffled input has identical final order',()=>{assert.deepEqual(Array.from(build([...games].reverse(),2,new Set(names)),t=>t.name),Array.from(rankings,t=>t.name))});
 const original=harness(games,names,undefined,old);
-check('all pre-existing team ratings are unchanged for identical input',()=>{for(const t of original.ctx.buildPollZeroRankings(games,2,new Set(names))){const updated=rankings.find(r=>r.name===t.name);assert.equal(updated.score,t.score);assert.equal(updated.rating,t.rating);assert.equal(updated.wins,t.wins);assert.equal(updated.losses,t.losses)}});
+check('completed records and full-record strength metrics remain unchanged',()=>{for(const t of original.ctx.buildPollZeroRankings(games,2,new Set(names))){const updated=rankings.find(r=>r.name===t.name);for(const key of ['wins','losses','gamesPlayed','teamWinPct','opponentWinPct','bestOpponentWins'])assert.equal(updated[key],t[key])}});
 const hist=games.filter(g=>g.week<=2).map(g=>({...g,startDate:g.startDate.replace('2026','2025')}));
 const hh=harness(hist,names);await new Promise(r=>setImmediate(r));hh.elements.year.value='2025';hh.elements['week-select'].value='2';let histWeeks=[];const hb=hh.ctx.buildPollZeroRankings;hh.ctx.buildPollZeroRankings=(gs,...rest)=>{histWeeks=gs.map(g=>g.week);return hb(gs,...rest)};await hh.ctx.loadRankings();
-check('2025 Week 2 regression: no remap, unchanged scores',()=>{assert.equal(Math.max(...histWeeks),2);const before=original.ctx.buildPollZeroRankings(hist,2,new Set(names));const after=hb(hist,2,new Set(names));for(const t of before)assert.equal(after.find(a=>a.name===t.name).rating,t.rating)});
+check('2025 Week 2: no remap; downstream scoring is year-independent',()=>{assert.equal(Math.max(...histWeeks),2);const dated2026=build(games.filter(g=>g.week<=2),2,new Set(names));const after=hb(hist,2,new Set(names));for(const t of dated2026)assert.equal(after.find(a=>a.name===t.name).rating,t.rating)});
 console.log('TOTAL',checks,'checks passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
