@@ -45,18 +45,38 @@ function calculateTeamScore(games) {
   return total;
 }
 
-// Poll Zero week numbering for 2026.
-// CollegeFootballData labels the Aug. 27-29 games as Week 1,
-// but Poll Zero treats them as Week 0.
-function getPollZeroWeek(gameWeek, selectedYear) {
+// Use Central calendar dates so late-night UTC kickoffs stay on the football
+// date. Week 0 opens Aug. 27; Week 1 starts Sept. 1, then weeks run Tue-Mon.
+function get2026PollZeroCalendarWeek(timestamp) {
+  const date = new Date(timestamp);
+  if (timestamp == null || !Number.isFinite(date.getTime())) return NaN;
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit"
+  }).formatToParts(date);
+  const part = type => Number(parts.find(item => item.type === type).value);
+  const calendarDay = Date.UTC(part("year"), part("month") - 1, part("day"));
+  if (calendarDay < Date.UTC(2026, 7, 27)) return -1;
+  if (calendarDay < Date.UTC(2026, 8, 1)) return 0;
+  return 1 + Math.floor((calendarDay - Date.UTC(2026, 8, 1)) / (7 * 24 * 60 * 60 * 1000));
+}
+
+function getPollZeroWeek(game, selectedYear) {
   if (Number(selectedYear) === 2026) {
-    return Math.max(0, gameWeek - 1);
+    // CFBD can group multiple calendar windows under one numeric week.
+    return get2026PollZeroCalendarWeek(game.startDate);
   }
 
-  return gameWeek;
+  return game.week;
 }
 
 function getAvailablePollZeroWeek(games, selectedYear, now = Date.now()) {
+  // In 2026 availability starts at the calendar boundary, even before the
+  // first kickoff or completed game. Use the same calendar as game filtering.
+  if (Number(selectedYear) === 2026) {
+    return get2026PollZeroCalendarWeek(now);
+  }
+
+  // Preserve schedule-based availability for historical seasons.
   // A week becomes available when a game is completed or its known scheduled
   // kickoff has arrived (TBD times cannot establish a start). Use the latest
   // such API week, mapped for the selected season.
@@ -64,7 +84,7 @@ function getAvailablePollZeroWeek(games, selectedYear, now = Date.now()) {
   return games.reduce((availableWeek, game) => {
     const kickoff = Date.parse(game.startDate);
     if (game.completed === true || (!game.startTimeTBD && Number.isFinite(kickoff) && kickoff <= now)) {
-      return Math.max(availableWeek, getPollZeroWeek(game.week, selectedYear));
+      return Math.max(availableWeek, getPollZeroWeek(game, selectedYear));
     }
     return availableWeek;
   }, -1);
@@ -386,10 +406,10 @@ const fbsTeamNames = await fetchFBSTeamNames();
   }
 
   // Use Poll Zero week numbering when filtering games.
-  // In 2026, API Week 1 becomes Poll Zero Week 0.
+  // In 2026, kickoff calendar dates determine the Poll Zero week.
   if (selectedWeek !== "all") {
     games = games.filter(
-      game => getPollZeroWeek(game.week, selectedYear) <= Number(selectedWeek)
+      game => getPollZeroWeek(game, selectedYear) <= Number(selectedWeek)
     );
   }
 
@@ -440,7 +460,7 @@ const fbsTeamNames = await fetchFBSTeamNames();
     const prevWeek = Number(selectedWeek) - 1;
 
     const prevGames = games.filter(
-      game => getPollZeroWeek(game.week, selectedYear) <= prevWeek
+      game => getPollZeroWeek(game, selectedYear) <= prevWeek
     );
 
     const prevRankings = buildPollZeroRankings(
