@@ -334,13 +334,37 @@ async function fetchTeamLogos() {
 // Get the official list of FBS teams.
 // This is used to prevent FCS teams from appearing in Poll Zero rankings,
 // even if an individual game is incorrectly labeled by the API.
-async function fetchFBSTeamNames(year) {
-  const response = await fetch(`/api/teams?year=${encodeURIComponent(year)}`);
-  if (!response.ok) throw new Error("FBS membership unavailable");
-  const data = await response.json();
-  if (!Array.isArray(data)) throw new Error("Invalid FBS membership response");
+// Keep successful membership and pending requests separate, keyed by season.
+const fbsTeamsByYear = new Map();
+const pendingFBSTeamsByYear = new Map();
 
-  return new Set(data.map(team => team.school));
+async function fetchFBSTeamNames(year) {
+  const season = String(year);
+  if (fbsTeamsByYear.has(season)) return new Set(fbsTeamsByYear.get(season));
+
+  if (!pendingFBSTeamsByYear.has(season)) {
+    const request = (async () => {
+      const response = await fetch(`/api/teams?year=${encodeURIComponent(season)}`);
+      if (!response.ok) throw new Error("FBS membership unavailable");
+      const data = await response.json();
+      if (!Array.isArray(data) || data.length === 0 || data.some(team =>
+        !team || typeof team.school !== "string" || !team.school.trim())) {
+        throw new Error("Invalid FBS membership response");
+      }
+      const names = new Set(data.map(team => team.school));
+      fbsTeamsByYear.set(season, names);
+      return names;
+    })();
+    pendingFBSTeamsByYear.set(season, request);
+  }
+
+  const request = pendingFBSTeamsByYear.get(season);
+  try {
+    // Callers cannot mutate the cached membership or another caller's result.
+    return new Set(await request);
+  } finally {
+    if (pendingFBSTeamsByYear.get(season) === request) pendingFBSTeamsByYear.delete(season);
+  }
 }
 
 // Poll availability, not a fixed week number, determines the comparison.

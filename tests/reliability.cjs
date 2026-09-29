@@ -65,8 +65,8 @@ async function endpoint(file, query, fetch) {
   const ctx = { fetch, URL, process: { env: { CFBD_API_KEY: "test-only-key" } } };
   vm.createContext(ctx);
   vm.runInContext(fs.readFileSync(path.join(root,"api",file),"utf8").replace("export default async function handler","async function handler"),ctx);
-  const result = {};
-  await ctx.handler({ query }, { status(n) { result.status=n; return this; }, json(data) { result.data=data; return this; } });
+  const result = { headers: {} };
+  await ctx.handler({ query }, { setHeader(name, value) { result.headers[name] = value; }, status(n) { result.status=n; return this; }, json(data) { result.data=data; return this; } });
   return result;
 }
 async function main() {
@@ -80,7 +80,19 @@ async function main() {
           phase==="polls"?url.startsWith("/api/rankings"):url==="/api/teams";
         if(match&&!blocked){blocked=true;reached.resolve();await gate.promise;}
       };
-      const older=h.load(2); await reached.promise; await h.load(3); const expected=snapshot(h);
+      const older=h.load(2); await reached.promise;
+      const newer=h.load(3);
+      // Same-season membership is shared: release it before awaiting either load.
+      if (phase === "membership") {
+        await tick();
+        if(fails)gate.reject(Error("shared request failed"));else gate.resolve();
+      }
+      await newer;
+      if (phase === "membership") {
+        if (fails) assert.match(h.html(), /Unable to load rankings/);
+        else assert.doesNotMatch(h.html(), /Unable to load rankings|Poll Zero Preview/);
+      }
+      const expected=snapshot(h);
       if(fails)gate.reject(Error("old request failed"));else gate.resolve();
       await older; assert.equal(snapshot(h),expected); assert.doesNotMatch(h.html(),/Poll Zero Preview/);
     });
