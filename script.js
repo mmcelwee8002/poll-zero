@@ -313,22 +313,20 @@ function getRankMap(rankings) {
   return rankMap;
 }
 
-// async function fetchTeamLogos() {
-async function fetchTeamLogos() {
-  const response = await fetch("/api/teams");
-
-  const data = await response.json();
-
-
+async function fetchTeamLogos(year) {
+  const teams = await fetchFBSTeams(year);
   const logoMap = {};
-
-  data.forEach(team => {
+  teams.forEach(team => {
     if (team.logos && team.logos.length > 0) {
       logoMap[team.school] = team.logos[0];
     }
   });
-
   return logoMap;
+}
+
+async function fetchFBSTeamNames(year) {
+  const teams = await fetchFBSTeams(year);
+  return new Set(teams.map(team => team.school));
 }
 
 // Get the official list of FBS teams.
@@ -338,9 +336,9 @@ async function fetchTeamLogos() {
 const fbsTeamsByYear = new Map();
 const pendingFBSTeamsByYear = new Map();
 
-async function fetchFBSTeamNames(year) {
+async function fetchFBSTeams(year) {
   const season = String(year);
-  if (fbsTeamsByYear.has(season)) return new Set(fbsTeamsByYear.get(season));
+  if (fbsTeamsByYear.has(season)) return fbsTeamsByYear.get(season);
 
   if (!pendingFBSTeamsByYear.has(season)) {
     const request = (async () => {
@@ -351,17 +349,16 @@ async function fetchFBSTeamNames(year) {
         !team || typeof team.school !== "string" || !team.school.trim())) {
         throw new Error("Invalid FBS membership response");
       }
-      const names = new Set(data.map(team => team.school));
-      fbsTeamsByYear.set(season, names);
-      return names;
+      fbsTeamsByYear.set(season, data);
+      return data;
     })();
     pendingFBSTeamsByYear.set(season, request);
   }
 
   const request = pendingFBSTeamsByYear.get(season);
   try {
-    // Callers cannot mutate the cached membership or another caller's result.
-    return new Set(await request);
+    // Consumers derive their own membership Set or logo map without modifying teams.
+    return await request;
   } finally {
     if (pendingFBSTeamsByYear.get(season) === request) pendingFBSTeamsByYear.delete(season);
   }
@@ -549,7 +546,7 @@ const fbsTeamNames = await fetchFBSTeamNames(selectedYear);
   selectedWeek,
   fbsTeamNames
 );
-  const logoMap = await fetchTeamLogos();
+  const logoMap = await fetchTeamLogos(selectedYear);
   if (!isCurrentLoad()) return;
 
   

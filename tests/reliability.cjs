@@ -80,6 +80,14 @@ async function main() {
           phase==="polls"?url.startsWith("/api/rankings"):url==="/api/teams";
         if(match&&!blocked){blocked=true;reached.resolve();await gate.promise;}
       };
+      // Logos no longer fetch separately; pause the consumer to retain stale-load coverage.
+      if (phase === "logos") {
+        const fetchLogos = h.ctx.fetchTeamLogos;
+        h.ctx.fetchTeamLogos = async year => {
+          if (!blocked) { blocked=true; reached.resolve(); await gate.promise; }
+          return fetchLogos(year);
+        };
+      }
       const older=h.load(2); await reached.promise;
       const newer=h.load(3);
       // Same-season membership is shared: release it before awaiting either load.
