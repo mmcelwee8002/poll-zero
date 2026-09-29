@@ -262,20 +262,25 @@ footer {
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 
-  max-width: 320px;
+  box-sizing: border-box;
+  width: 340px;
+  max-width: calc(100vw - 20px);
+  max-height: calc(100dvh - 20px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 10px 12px;
 
-  background: rgba(20, 20, 20, 0.95);
+  background: #141414;
   color: white;
 
   border-radius: 8px;
   font-size: 0.9rem;
   line-height: 1.4;
 
-  white-space: pre-line;
+  white-space: normal;
 text-align: left;
 
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .breakdown-popup strong:first-child {
@@ -386,3 +391,17 @@ text-align: left;
     padding: 8px;
   }
 }
+.breakdown-trigger { background: transparent; color: inherit; font: inherit; padding: 4px; margin: 0; border: 0; border-bottom: 1px dotted currentColor; }
+.breakdown-popup h2 { font-size: 1.1rem; margin: 8px 0; clear: both; }
+.breakdown-popup h3 { font-size: 0.95rem; margin-bottom: 4px; }
+.breakdown-popup p { margin: 10px 0; }
+.breakdown-popup { overflow-wrap: anywhere; }
+.breakdown-note { color: #ccc; font-size: 0.8rem; }
+.opponent-result { padding: 10px 0; border-top: 1px solid #555; }
+.opponent-level { font-size: 0.75rem; color: #ccc; }
+.positive { color: #7cfc90; }
+.negative { color: #ff8080; }
+.breakdown-total { border-top: 1px solid #777; padding-top: 10px; }
+.breakdown-close { float: right; margin: 0; padding: 6px 10px; }
+.breakdown-trigger:focus-visible, .breakdown-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.formula-note { line-height: 1.6; }

@@ -53,9 +53,13 @@
 <p class="formula-note">
   <strong>Opponent Outcome Model:</strong>
   <br>
-  +5 for each current win earned by teams you beat | -5 for each current loss suffered by teams you lost to
+  A win by itself is worth 0 points.
   <br>
-  Opponent records are recalculated throughout the season, so results gain or lose value as those opponents keep playing.
+  <strong>Beat an FBS team:</strong> +5 for each current win held by that opponent.
+  <br>
+  <strong>Lose to an FBS team:</strong> -5 for each current loss held by that opponent.
+  <br>
+  Opponent values change throughout the season as their records change.
   <br>
   FCS opponents are treated as 1-11.
   <br>
@@ -72,7 +76,7 @@
 
 </footer>
 
-<div id="breakdown-popup" class="breakdown-popup"></div>
+<div id="breakdown-popup" class="breakdown-popup" role="dialog" aria-labelledby="breakdown-title" tabindex="-1"></div>
 <script src="script.js"></script>
 
 

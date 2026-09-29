@@ -215,12 +215,18 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
       // Save breakdown details for hover/click explanation.
       home.breakdown.push({
         opponent: away.name,
+        level: awayIsNonFBS ? "FCS" : "FBS",
+        opponentWins: awayWins,
+        opponentLosses: awayLosses,
         result: "Win",
         points: homeContribution
       });
 
       away.breakdown.push({
         opponent: home.name,
+        level: homeIsNonFBS ? "FCS" : "FBS",
+        opponentWins: homeWins,
+        opponentLosses: homeLosses,
         result: "Loss",
         points: awayContribution
       });
@@ -240,12 +246,18 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
       // Save breakdown details for hover/click explanation.
       away.breakdown.push({
         opponent: home.name,
+        level: homeIsNonFBS ? "FCS" : "FBS",
+        opponentWins: homeWins,
+        opponentLosses: homeLosses,
         result: "Win",
         points: awayContribution
       });
 
       home.breakdown.push({
         opponent: away.name,
+        level: awayIsNonFBS ? "FCS" : "FBS",
+        opponentWins: awayWins,
+        opponentLosses: awayLosses,
         result: "Loss",
         points: homeContribution
       });
@@ -601,48 +613,17 @@ if (Number(selectedWeek) === 2) {
 
     const barWidth = Math.min(team.rating * 10, 100);
 
-    // Get top score contributors for hover explanation.
-    // Sort by absolute point impact so biggest positive/negative contributors show first.
-    //clean working
-
-
-    const topPositive = team.breakdown
-      .filter(item => item.points > 0)
-      .sort((a, b) => b.points - a.points)
-      .slice(0, 3);
-
-    const topNegative = team.breakdown
-      .filter(item => item.points < 0)
-      .sort((a, b) => a.points - b.points)
-      .slice(0, 2);
-
-    const topContributors = [
-      "<strong>Poll Zero Breakdown</strong>",
-      "",
-      "<strong>Top Positive</strong>",
-      ...topPositive.map(item => `• ${item.opponent}: +${item.points}`),
-      "",
-      "<strong>Top Negative</strong>",
-      ...topNegative.map(item => `• ${item.opponent}: ${item.points}`),
-      "",
-      `Total Points: ${team.score}`,
-      `Games Played: ${team.gamesPlayed}`,
-      "",
-      `${team.score} ÷ ${team.gamesPlayed} = ${team.rating.toFixed(1)}`
-    ].join("\n");
-
-
-
     li.innerHTML = `
 <div class="team-row">
   <span>${currentRank}. ${logo} ${team.name} ${movement}</span>
 
-  <span
+  <button type="button"
     class="rating-value breakdown-trigger"
-    data-breakdown="${topContributors}"
+    data-breakdown="${escapeBreakdownText(renderTeamBreakdown(team))}"
+    aria-label="Show Poll Zero breakdown" aria-controls="breakdown-popup" aria-expanded="false"
   >
     ${team.rating.toFixed(1)}
-  </span>
+  </button>
 </div>
   
 
@@ -668,119 +649,86 @@ if (Number(selectedWeek) === 2) {
   }
 }
 
-const supportsHover = window.matchMedia(
-  "(hover: hover) and (pointer: fine)"
-).matches;
-
-
-const breakdownPopup = document.getElementById("breakdown-popup");
+function escapeBreakdownText(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+function renderOpponentResult(item) {
+  const points = item.points === 0 ? (item.result === "Win" ? "+0" : "-0")
+    : item.points > 0 ? '+' + item.points : String(item.points);
+  return '<article class="opponent-result"><strong>' + escapeBreakdownText(item.opponent) +
+    '</strong> <span class="opponent-level">' + item.level + '</span><div>Result: ' + item.result +
+    '</div><div>' + (item.level === 'FCS' ? 'Poll Zero Record Used' : 'Current Record') + ': ' +
+    item.opponentWins + '-' + item.opponentLosses + '</div><div>Contribution: <b class="' +
+    (item.points > 0 ? 'positive' : item.points < 0 ? 'negative' : 'zero') + '">' + points + '</b></div></article>';
+}
+function renderTeamBreakdown(team) {
+  return '<button type="button" class="breakdown-close" aria-label="Close breakdown">Close</button>' +
+    '<h2 id="breakdown-title">' + escapeBreakdownText(team.name) + ' &mdash; ' + team.wins + '-' + team.losses + '</h2>' +
+    '<p>Poll Zero Rating: <b>' + team.rating.toFixed(1) + '</b><br>Total Points: ' + team.score + '<br>Games Played: ' + team.gamesPlayed + '</p>' +
+    '<p class="breakdown-note">Teams with the same win-loss record can have different Poll Zero ratings because opponent results determine the value of each game.</p>' +
+    '<h3>Opponent results</h3><p class="breakdown-note">Records reflect the selected ranking window. FCS records are synthetic.</p>' +
+    team.breakdown.map(renderOpponentResult).join('') + '<p class="breakdown-total">Total Points: ' + team.score +
+    '<br>Games Played: ' + team.gamesPlayed + '<br>Rating: ' + team.score + ' &divide; ' + team.gamesPlayed + ' = ' + team.rating.toFixed(1) + '</p>';
+}
+const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const breakdownPopup = document.getElementById('breakdown-popup');
 let activeBreakdownTrigger = null;
-let ignorePopupScrollUntil = 0;
-let ignorePopupMouseoutUntil = 0;
-
-
-document.addEventListener("mouseover", (event) => {
-
-  const trigger = event.target.closest(".breakdown-trigger");
-
-  if (!trigger) return;
-
-  const triggerPosition = trigger.getBoundingClientRect();
-
+let pinnedBreakdown = false;
+let breakdownHideTimer;
+function closeBreakdown(restoreFocus = false) {
+  clearTimeout(breakdownHideTimer);
+  const trigger = activeBreakdownTrigger;
+  if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  breakdownPopup.style.display = 'none';
+  activeBreakdownTrigger = null;
+  pinnedBreakdown = false;
+  if (restoreFocus && trigger) trigger.focus();
+}
+function showBreakdown(trigger, pinned = false) {
+  closeBreakdown();
+  activeBreakdownTrigger = trigger;
+  pinnedBreakdown = pinned;
+  trigger.setAttribute('aria-expanded', 'true');
   breakdownPopup.innerHTML = trigger.dataset.breakdown;
-  breakdownPopup.querySelectorAll("strong").forEach((heading) => {
-    if (heading.textContent === "Top Positive") {
-      heading.style.color = "#7CFC90";
-    }
-
-    if (heading.textContent === "Top Negative") {
-      heading.style.color = "#ff8080";
-    }
-  });
-
-  breakdownPopup.style.display = "block";
-
-  const popupWidth = breakdownPopup.offsetWidth;
-  const rightSpace = window.innerWidth - triggerPosition.right;
-
-  if (rightSpace < popupWidth + 10) {
-    breakdownPopup.style.left = `${triggerPosition.left - popupWidth - 10}px`;
-  } else {
-    breakdownPopup.style.left = `${triggerPosition.right + 10}px`;
+  breakdownPopup.style.display = 'block';
+  breakdownPopup.scrollTop = 0;
+  const rect = trigger.getBoundingClientRect();
+  const width = breakdownPopup.offsetWidth;
+  const height = breakdownPopup.offsetHeight;
+  const left = rect.right + width + 10 <= window.innerWidth ? rect.right + 10 : rect.left - width - 10;
+  breakdownPopup.style.left = Math.max(10, Math.min(left, window.innerWidth - width - 10)) + 'px';
+  breakdownPopup.style.top = Math.max(10, Math.min(rect.top, window.innerHeight - height - 10)) + 'px';
+  if (pinned) breakdownPopup.focus();
+}
+document.addEventListener('click', event => {
+  const trigger = event.target.closest('.breakdown-trigger');
+  if (trigger) {
+    if (trigger === activeBreakdownTrigger && pinnedBreakdown) closeBreakdown();
+    else showBreakdown(trigger, true);
+  } else if (event.target.closest('.breakdown-close')) closeBreakdown(true);
+  else if (!breakdownPopup.contains(event.target)) closeBreakdown();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && activeBreakdownTrigger) closeBreakdown(true);
+});
+document.addEventListener('mouseover', event => {
+  if (!supportsHover || pinnedBreakdown) return;
+  const trigger = event.target.closest('.breakdown-trigger');
+  if (trigger || breakdownPopup.contains(event.target)) clearTimeout(breakdownHideTimer);
+  if (trigger && trigger !== activeBreakdownTrigger) showBreakdown(trigger);
+});
+document.addEventListener('mouseout', event => {
+  if (!supportsHover || pinnedBreakdown) return;
+  if (event.target.closest('.breakdown-trigger') || breakdownPopup.contains(event.target)) {
+    clearTimeout(breakdownHideTimer);
+    breakdownHideTimer = setTimeout(() => closeBreakdown(), 200);
   }
-
-  const popupHeight = breakdownPopup.offsetHeight;
-  const bottomSpace = window.innerHeight - triggerPosition.top;
-
-  if (bottomSpace < popupHeight + 10) {
-    breakdownPopup.style.top = `${window.innerHeight - popupHeight - 10}px`;
-  } else {
-    breakdownPopup.style.top = `${triggerPosition.top}px`;
-  }
-
-  document.addEventListener("mouseout", (event) => {
-    const trigger = event.target.closest(".breakdown-trigger");
-
-    if (!trigger) return;
-
-    breakdownPopup.style.display = "none";
-  });
-
-  window.addEventListener("scroll", () => {
-    if (Date.now() < ignorePopupScrollUntil) return;
-
-    breakdownPopup.style.display = "none";
-    activeBreakdownTrigger = null;
-  });
-
-  //click funtionality
-  //blank
-
-  document.addEventListener("click", (event) => {
-    const trigger = event.target.closest(".breakdown-trigger");
-
-    if (!trigger) {
-      breakdownPopup.style.display = "none";
-      return;
-    }
-
-    const triggerPosition = trigger.getBoundingClientRect();
-
-    breakdownPopup.innerHTML = trigger.dataset.breakdown;
-    breakdownPopup.querySelectorAll("strong").forEach((heading) => {
-      if (heading.textContent === "Top Positive") {
-        heading.style.color = "#7CFC90";
-      }
-
-      if (heading.textContent === "Top Negative") {
-        heading.style.color = "#ff8080";
-      }
-    });
-
-    breakdownPopup.style.display = "block";
-
-    const popupWidth = breakdownPopup.offsetWidth;
-    const rightSpace = window.innerWidth - triggerPosition.right;
-
-    if (rightSpace < popupWidth + 10) {
-      breakdownPopup.style.left =
-        `${triggerPosition.left - popupWidth - 10}px`;
-    } else {
-      breakdownPopup.style.left =
-        `${triggerPosition.right + 10}px`;
-    }
-
-    const popupHeight = breakdownPopup.offsetHeight;
-    const bottomSpace = window.innerHeight - triggerPosition.top;
-
-    if (bottomSpace < popupHeight + 10) {
-      breakdownPopup.style.top =
-        `${window.innerHeight - popupHeight - 10}px`;
-    } else {
-      breakdownPopup.style.top = `${triggerPosition.top}px`;
-    }
-  });
-
+});
+window.addEventListener('resize', () => closeBreakdown());
+window.addEventListener('scroll', () => {
+  if (!pinnedBreakdown) closeBreakdown();
 });
 
 yearSelect.addEventListener("change", () => {
