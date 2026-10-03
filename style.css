@@ -399,8 +399,10 @@ text-align: left;
 .breakdown-note { color: #ccc; font-size: 0.8rem; }
 .opponent-result { padding: 10px 0; border-top: 1px solid #555; }
 .opponent-level { font-size: 0.75rem; color: #ccc; }
-.positive { color: #7cfc90; }
-.negative { color: #ff8080; }
+.opponent-date { font-size: 0.8rem; color: #ccc; margin: 2px 0 4px; }
+.result-win, .contribution-positive { color: #7cfc90; }
+.result-loss, .contribution-negative { color: #ff8080; }
+.contribution-zero { color: #80bfff; }
 .breakdown-total { border-top: 1px solid #777; padding-top: 10px; }
 .breakdown-close { float: right; margin: 0; padding: 6px 10px; }
 .breakdown-trigger:focus-visible, .breakdown-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }

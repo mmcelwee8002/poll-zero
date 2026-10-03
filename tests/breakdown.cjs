@@ -26,10 +26,10 @@ const teams=context.buildPollZeroRankings(games,1,names);
 const iowa=teams.find(t=>t.name==='Iowa');
 let count=0;
 function check(name,fn){fn();count++;console.log('PASS',name);}
-check('Iowa: all four games retained, including winless +0',()=>{
+check('Iowa: all four games retained, including winless zero contribution',()=>{
  assert.equal(iowa.breakdown.length,4);
  assert.deepEqual(Array.from(iowa.breakdown,b=>b.points),[15,10,5,0]);
- assert.match(context.renderTeamBreakdown(iowa),/>\+0</);
+ assert.match(context.renderTeamBreakdown(iowa),/class="contribution-zero">0</);
 });
 check('FBS current records and FCS synthetic record',()=>{
  assert.equal(iowa.breakdown[1].opponentWins,2);
@@ -50,13 +50,42 @@ check('Losses display negative points, including FCS -55',()=>{
  assert.match(context.renderTeamBreakdown(teams.find(t=>t.name==='Loser')),/>-5</);
  assert.match(context.renderTeamBreakdown(teams.find(t=>t.name==='FCS Loser')),/>-55</);
 });
-check('Loss to undefeated team displays -0',()=>{
- assert.match(context.renderTeamBreakdown(teams.find(t=>t.name==='T0')),/>-0</);
+check('Loss to undefeated team displays unsigned zero',()=>{
+ const loss=teams.find(t=>t.name==='T0').breakdown[0];
+ assert.ok(Object.is(loss.points,-0));
+ assert.match(context.renderOpponentResult(loss),/class="contribution-zero">0</);
 });
 check('Opponent names are escaped and every repeated matchup renders',()=>{
  const html=context.renderTeamBreakdown({...iowa,breakdown:[...iowa.breakdown,{...iowa.breakdown[0],opponent:'<test> " &'}]});
  assert.equal((html.match(/class="opponent-result"/g)||[]).length,5);
  assert.ok(html.includes('&lt;test&gt; &quot; &amp;'));
+});
+check('Result and contribution classes cover wins, losses, and both zeros',()=>{
+ for(const [result,points,color] of [['Win',5,'positive'],['Loss',-5,'negative'],['Loss',-0,'zero'],['Win',0,'zero']]) {
+  const item={...iowa.breakdown[0],result,points};
+  const html=context.renderOpponentResult(item);
+  assert.ok(html.includes('class="result-'+result.toLowerCase()+'">'+result+'</span>'));
+  assert.ok(html.includes('class="contribution-'+color+'">'+(points===0?'0':points>0?'+'+points:points)+'</b>'));
+  assert.match(html,/class="opponent-date">Sep 1, 2025</);
+  assert.doesNotMatch(html,/>[+-]0</);
+  assert.ok(Object.is(item.points,points));
+ }
+});
+check('All contribution branches retain the original game date, including FCS',()=>{
+ for(const team of teams) for(const item of team.breakdown) assert.equal(item.startDate,'2025-09-01T18:00:00Z');
+ const html=context.renderOpponentResult(iowa.breakdown[2]);
+ assert.match(html,/class="opponent-date">Sep 1, 2025</);
+ assert.match(html,/FCS<\/span>/);
+ assert.match(html,/Poll Zero Record Used: 1-11/);
+ assert.match(html,/class="contribution-positive">\+5</);
+});
+check('Dates use the Central calendar, preserve date-only input, and omit unknown dates',()=>{
+ assert.equal(context.formatOpponentGameDate('2026-09-20T02:30:00Z'),'Sep 19, 2026');
+ assert.equal(context.formatOpponentGameDate('2026-09-19'),'Sep 19, 2026');
+ assert.equal(context.formatOpponentGameDate('2026-01-01T02:00:00Z'),'Dec 31, 2025');
+ for(const startDate of [undefined,null,'','invalid']) {
+  assert.doesNotMatch(context.renderOpponentResult({...iowa.breakdown[0],startDate}),/opponent-date/);
+ }
 });
 console.log('TOTAL',count,'breakdown checks passed');
 module.exports={games,teams,iowa};

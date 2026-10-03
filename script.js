@@ -215,6 +215,7 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
       // Save breakdown details for hover/click explanation.
       home.breakdown.push({
         opponent: away.name,
+        startDate: game.startDate,
         level: awayIsNonFBS ? "FCS" : "FBS",
         opponentWins: awayWins,
         opponentLosses: awayLosses,
@@ -224,6 +225,7 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
 
       away.breakdown.push({
         opponent: home.name,
+        startDate: game.startDate,
         level: homeIsNonFBS ? "FCS" : "FBS",
         opponentWins: homeWins,
         opponentLosses: homeLosses,
@@ -246,6 +248,7 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
       // Save breakdown details for hover/click explanation.
       away.breakdown.push({
         opponent: home.name,
+        startDate: game.startDate,
         level: homeIsNonFBS ? "FCS" : "FBS",
         opponentWins: homeWins,
         opponentLosses: homeLosses,
@@ -255,6 +258,7 @@ function buildPollZeroRankings(games, selectedWeek, fbsTeamNames) {
 
       home.breakdown.push({
         opponent: away.name,
+        startDate: game.startDate,
         level: awayIsNonFBS ? "FCS" : "FBS",
         opponentWins: awayWins,
         opponentLosses: awayLosses,
@@ -675,14 +679,27 @@ function escapeBreakdownText(value) {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[char]);
 }
+function formatOpponentGameDate(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  if (!Number.isFinite(date.getTime())) return '';
+  // Match the existing Central football calendar; date-only values stay literal.
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: /^\d{4}-\d{2}-\d{2}$/.test(timestamp) ? 'UTC' : 'America/Chicago',
+    month: 'short', day: 'numeric', year: 'numeric'
+  }).format(date);
+}
 function renderOpponentResult(item) {
-  const points = item.points === 0 ? (item.result === "Win" ? "+0" : "-0")
+  const points = item.points === 0 ? '0'
     : item.points > 0 ? '+' + item.points : String(item.points);
+  const date = formatOpponentGameDate(item.startDate);
   return '<article class="opponent-result"><strong>' + escapeBreakdownText(item.opponent) +
-    '</strong> <span class="opponent-level">' + item.level + '</span><div>Result: ' + item.result +
-    '</div><div>' + (item.level === 'FCS' ? 'Poll Zero Record Used' : 'Current Record') + ': ' +
+    '</strong> <span class="opponent-level">' + item.level + '</span>' +
+    (date ? '<div class="opponent-date">' + date + '</div>' : '') +
+    '<div>Result: <span class="' + (item.result === 'Win' ? 'result-win' : 'result-loss') + '">' + item.result +
+    '</span></div><div>' + (item.level === 'FCS' ? 'Poll Zero Record Used' : 'Current Record') + ': ' +
     item.opponentWins + '-' + item.opponentLosses + '</div><div>Contribution: <b class="' +
-    (item.points > 0 ? 'positive' : item.points < 0 ? 'negative' : 'zero') + '">' + points + '</b></div></article>';
+    (item.points > 0 ? 'contribution-positive' : item.points < 0 ? 'contribution-negative' : 'contribution-zero') + '">' + points + '</b></div></article>';
 }
 function renderTeamBreakdown(team) {
   return '<button type="button" class="breakdown-close" aria-label="Close breakdown">Close</button>' +
