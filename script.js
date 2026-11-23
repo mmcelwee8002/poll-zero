@@ -416,6 +416,8 @@ function buildOfficialRankMap(officialRankings, selectedWeek) {
 }
 
 
+const rankingsPageSize = 25;
+const loadMoreRankingsButton = document.getElementById("load-more-rankings");
 let latestRankingLoadId = 0;
 
 async function loadRankings() {
@@ -429,6 +431,9 @@ async function loadRankings() {
   const isCurrentLoad = () => loadId === latestRankingLoadId &&
     selectedYear === document.getElementById("year").value &&
     selectedWeek === document.getElementById("week-select").value;
+
+  loadMoreRankingsButton.hidden = true;
+  loadMoreRankingsButton.onclick = null;
 
   try {
   // Clear the previous selection while loading; stale requests cannot restore it.
@@ -541,8 +546,7 @@ const fbsTeamNames = await fetchFBSTeamNames(selectedYear);
   fbsTeamNames
 );
 
-    // Compare against the previous displayed Top 25; other teams are NEW.
-    previousRankMap = getRankMap(prevRankings.slice(0, 25));
+    previousRankMap = getRankMap(prevRankings);
   }
 
  const rankings = buildPollZeroRankings(
@@ -586,13 +590,14 @@ if (Number(selectedWeek) === 2) {
     return;
   }
 
-  rankings.slice(0, 25).forEach((team, index) => {
-    const currentRank = index + 1;
+  function createRankingRow(team, currentRank) {
     const previousRank = previousRankMap[team.name];
 
     let movement = "";
 
-    if (showMovement && previousRank !== undefined) {
+    // Keep NEW for teams entering the Top 25. Lower ranks track overall movement.
+    const enteredTop25 = currentRank <= rankingsPageSize && previousRank > rankingsPageSize;
+    if (showMovement && previousRank !== undefined && !enteredTop25) {
       const change = previousRank - currentRank;
 
       if (change > 0) movement = `<span class="up">↑ ${change}</span>`;
@@ -663,8 +668,25 @@ if (Number(selectedWeek) === 2) {
 
 
 
-    list.appendChild(li);
-  });
+    return li;
+  }
+
+  let visibleCount = 0;
+  function appendRankingsPage() {
+    if (!isCurrentLoad()) return;
+
+    const end = Math.min(visibleCount + rankingsPageSize, rankings.length);
+    const rows = document.createDocumentFragment();
+    for (let index = visibleCount; index < end; index++) {
+      rows.appendChild(createRankingRow(rankings[index], index + 1));
+    }
+    list.appendChild(rows);
+    visibleCount = end;
+    loadMoreRankingsButton.hidden = visibleCount === rankings.length;
+  }
+
+  appendRankingsPage();
+  loadMoreRankingsButton.onclick = appendRankingsPage;
   } catch (error) {
     // Failed obsolete requests must not replace newer results or messages.
     if (!isCurrentLoad()) return;
@@ -786,12 +808,4 @@ window.loadRankings = loadRankings;
 Array.from(weekSelect.options).forEach(option => {
   option.disabled = option.value !== "all";
 });
-const initialScheduleYear = yearSelect.value;
-fetchGames(initialScheduleYear).then(games => {
-  if (latestRankingLoadId === 0 && yearSelect.value === initialScheduleYear) {
-    updateWeekAvailability(games, initialScheduleYear);
-  }
-}).catch(error => {
-  if (latestRankingLoadId !== 0 || yearSelect.value !== initialScheduleYear) return;
-  console.error("Unable to determine available Poll Zero weeks:", error);
-});
+loadRankings();
