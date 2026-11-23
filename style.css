@@ -407,3 +407,8 @@ text-align: left;
 .breakdown-close { float: right; margin: 0; padding: 6px 10px; }
 .breakdown-trigger:focus-visible, .breakdown-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .formula-note { line-height: 1.6; }
+
+#load-more-rankings {
+  margin: 0 auto 1.5rem;
+  padding: 0.6rem 1rem;
+}
